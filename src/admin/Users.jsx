@@ -11,7 +11,7 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await api.get('/users');
+      const res = await api.get('/users/');
       setUsers(res.data);
     } catch (error) {
       toast.error('Failed to fetch users');
@@ -20,7 +20,7 @@ const AdminUsers = () => {
 
   const toggleBlock = async (id, currentStatus) => {
     try {
-      await api.patch(`/users/${id}`, { isBlock: !currentStatus });
+      await api.patch(`/users/${id}/`, { isBlock: !currentStatus });
       toast.success(`User ${!currentStatus ? 'blocked' : 'unblocked'} successfully`);
       fetchUsers();
     } catch (error) {
@@ -30,8 +30,9 @@ const AdminUsers = () => {
 
   const deleteUser = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
+
     try {
-      await api.delete(`/users/${id}`);
+      await api.delete(`/users/${id}/`);
       toast.success('User deleted successfully');
       fetchUsers();
     } catch (error) {
@@ -84,6 +85,7 @@ const AdminUsers = () => {
                     >
                       <Eye className="w-5 h-5 text-blue-400 hover:text-blue-300" />
                     </button>
+
                     <button
                       onClick={() => toggleBlock(user.id, user.isBlock)}
                       aria-label={user.isBlock ? 'Unblock User' : 'Block User'}
@@ -96,6 +98,7 @@ const AdminUsers = () => {
                         <Ban className="w-5 h-5 text-yellow-400 hover:text-yellow-300" />
                       )}
                     </button>
+
                     <button
                       onClick={() => deleteUser(user.id)}
                       aria-label="Delete User"
@@ -107,6 +110,7 @@ const AdminUsers = () => {
                   </td>
                 </tr>
               ))}
+
               {users.length === 0 && (
                 <tr>
                   <td colSpan="5" className="text-center p-6 text-gray-400">
