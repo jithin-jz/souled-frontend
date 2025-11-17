@@ -45,7 +45,7 @@ const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-auto object-contain transition-opacity duration-300 opacity-100 group-hover:scale-105"
+            className="w-full h-auto object-contain transition-opacity duration-300 group-hover:scale-105"
           />
         </div>
 
@@ -67,7 +67,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [currentBanner, setCurrentBanner] = useState(0);
 
-  const { wishlist, addToWishlist, removeFromWishlist } = useCart();
+  const { addToWishlist, removeFromWishlist, isProductWishlisted } = useCart();
   const { user } = useAuth();
 
   // Preload banners
@@ -114,9 +114,7 @@ const Home = () => {
         return;
       }
 
-      const isWishlisted = wishlist.some((item) => item.id === product.id);
-
-      if (isWishlisted) {
+      if (isProductWishlisted(product.id)) {
         removeFromWishlist(product.id);
         toast.info(`${product.name} removed from wishlist`);
       } else {
@@ -124,7 +122,7 @@ const Home = () => {
         toast.success(`${product.name} added to wishlist`);
       }
     },
-    [user, wishlist, addToWishlist, removeFromWishlist]
+    [user, addToWishlist, removeFromWishlist, isProductWishlisted]
   );
 
   if (loading) {
@@ -137,7 +135,6 @@ const Home = () => {
 
   return (
     <div className="space-y-12 pb-0 bg-gray-900 text-white">
-
       {/* Banner */}
       <div className="w-full overflow-hidden relative">
         <img
@@ -189,7 +186,7 @@ const Home = () => {
               key={product.id}
               product={product}
               onToggleWishlist={handleToggleWishlist}
-              isWishlisted={wishlist.some((item) => item.id === product.id)}
+              isWishlisted={isProductWishlisted(product.id)}
             />
           ))}
         </div>
@@ -204,7 +201,7 @@ const Home = () => {
               key={product.id}
               product={product}
               onToggleWishlist={handleToggleWishlist}
-              isWishlisted={wishlist.some((item) => item.id === product.id)}
+              isWishlisted={isProductWishlisted(product.id)}
             />
           ))}
         </div>

@@ -13,14 +13,14 @@ const SingleProduct = () => {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
 
-  // Fetch product on mount
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);
         setProduct(res.data);
-      } catch (err) {
+      } catch {
         toast.error("Failed to load product");
       } finally {
         setLoading(false);
@@ -28,33 +28,44 @@ const SingleProduct = () => {
     };
 
     fetchProduct();
-    window.scrollTo(0, 0); // Always scroll to top
+    window.scrollTo(0, 0);
   }, [id]);
 
-  const handleAddToCart = () => {
+  const safeAddToCart = async () => {
     if (!user) {
       toast.error("Please login to add items to cart");
       return;
     }
 
-    addToCart({ ...product, quantity: 1 });
+    if (!product) return;
+
+    setBtnLoading(true);
+    await addToCart(product); // cleaner and consistent with CartContext logic
+    setBtnLoading(false);
+
     toast.success("Added to cart!");
   };
 
-  const handleBuyNow = () => {
+  const safeBuyNow = async () => {
     if (!user) {
       toast.error("Please login to buy products");
       return;
     }
 
-    addToCart({ ...product, quantity: 1 });
-    toast.success("Item added to cart!");
+    setBtnLoading(true);
+    await addToCart(product);
+    setBtnLoading(false);
+
     navigate("/cart");
+  };
+
+  const handleImageError = (e) => {
+    e.currentTarget.src = "https://via.placeholder.com/400?text=No+Image";
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] text-white animate-pulse bg-slate-900">
+      <div className="flex justify-center items-center min-h-[60vh] bg-slate-900 text-white">
         Loading product...
       </div>
     );
@@ -62,11 +73,11 @@ const SingleProduct = () => {
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-white bg-slate-900">
-        <p className="text-red-600 font-semibold mb-4">Product not found</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-slate-900 text-white">
+        <p className="text-red-500 font-semibold mb-4">Product not found</p>
         <button
           onClick={() => navigate(-1)}
-          className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md"
+          className="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-md"
         >
           Go Back
         </button>
@@ -74,16 +85,19 @@ const SingleProduct = () => {
     );
   }
 
+  const frontendCategory =
+    product.category.toLowerCase() === "men" ? "Men" : "Women";
+
   return (
     <div className="bg-slate-900 text-white min-h-screen px-4 pt-10 pb-0">
-      {/* Product Container */}
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 bg-slate-800 p-6 rounded-2xl shadow-md">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 bg-slate-800 p-6 rounded-2xl shadow-lg">
         
         {/* Product Image */}
         <div className="bg-slate-700 rounded-xl overflow-hidden">
           <img
-            src={product.image || "https://via.placeholder.com/400?text=No+Image"}
+            src={product.image}
             alt={product.name}
+            onError={handleImageError}
             className="w-full h-[450px] object-cover"
           />
         </div>
@@ -91,7 +105,7 @@ const SingleProduct = () => {
         {/* Product Details */}
         <div className="flex flex-col justify-between">
           <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-white">{product.name}</h1>
+            <h1 className="text-3xl font-bold">{product.name}</h1>
 
             <p className="text-2xl text-green-400 font-semibold">
               ₹{Number(product.price).toLocaleString("en-IN")}
@@ -101,15 +115,14 @@ const SingleProduct = () => {
               {product.description || "No description available."}
             </p>
 
-            {/* Category → Filters on Products Page */}
             <div className="text-sm">
               <span className="font-medium text-slate-100">Category: </span>
               <Link
                 to="/products"
-                state={{ category: product.category }}
+                state={{ category: frontendCategory }}
                 className="text-green-400 hover:underline"
               >
-                {product.category}
+                {frontendCategory}
               </Link>
             </div>
           </div>
@@ -117,17 +130,19 @@ const SingleProduct = () => {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <button
-              onClick={handleAddToCart}
-              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-red-600 hover:bg-slate-700 transition"
+              disabled={btnLoading}
+              onClick={safeAddToCart}
+              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-red-600 hover:bg-slate-700 transition disabled:opacity-50"
             >
-              Add to Cart
+              {btnLoading ? "Processing..." : "Add to Cart"}
             </button>
 
             <button
-              onClick={handleBuyNow}
-              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-slate-700 hover:bg-slate-600 transition"
+              disabled={btnLoading}
+              onClick={safeBuyNow}
+              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-slate-700 hover:bg-slate-600 transition disabled:opacity-50"
             >
-              Buy Now
+              {btnLoading ? "Processing..." : "Buy Now"}
             </button>
           </div>
         </div>

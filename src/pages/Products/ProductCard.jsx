@@ -1,28 +1,28 @@
-import { Link } from 'react-router-dom';
-import { FiHeart } from 'react-icons/fi';
-import { FaHeart } from 'react-icons/fa';
+import { Link } from "react-router-dom";
+import { FiHeart } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
 
-const ProductCard = ({ product, onToggleWishlist, isWishlisted, onAddToCart }) => {
+const ProductCard = ({
+  product,
+  onToggleWishlist,
+  isWishlisted,
+  onAddToCart,
+}) => {
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.nativeEvent.stopImmediatePropagation) {
-      e.nativeEvent.stopImmediatePropagation();
-    }
     onToggleWishlist(product);
   };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.nativeEvent.stopImmediatePropagation) {
-      e.nativeEvent.stopImmediatePropagation();
-    }
     onAddToCart(product);
   };
 
   const handleImageError = (e) => {
-    e.currentTarget.src = "https://via.placeholder.com/300x300?text=No+Image";
+    e.currentTarget.src =
+      "https://via.placeholder.com/300x300?text=No+Image";
     e.currentTarget.style.opacity = 1;
   };
 
@@ -32,6 +32,7 @@ const ProductCard = ({ product, onToggleWishlist, isWishlisted, onAddToCart }) =
 
   return (
     <div className="group relative">
+      {/* Wishlist Toggle */}
       <button
         onClick={handleWishlist}
         className="absolute top-2 right-2 z-10 p-2 rounded-full bg-gray-900/80 backdrop-blur-sm transition-transform hover:scale-110"
@@ -43,10 +44,14 @@ const ProductCard = ({ product, onToggleWishlist, isWishlisted, onAddToCart }) =
         )}
       </button>
 
+      {/* Product Link */}
       <Link to={`/products/${product.id}`} className="block">
         <div className="overflow-hidden rounded-lg bg-gray-800">
           <img
-            src={product.image || "https://via.placeholder.com/300x300?text=No+Image"}
+            src={
+              product.image ||
+              "https://via.placeholder.com/300x300?text=No+Image"
+            }
             alt={product.name || "Product Image"}
             loading="lazy"
             className="w-full h-auto object-contain opacity-0 transition-all duration-500 group-hover:scale-105"
@@ -55,9 +60,12 @@ const ProductCard = ({ product, onToggleWishlist, isWishlisted, onAddToCart }) =
           />
         </div>
 
+        {/* Name + Price + Add Button */}
         <div className="mt-3 flex justify-between items-center gap-2">
           <div>
-            <h3 className="text-white font-medium truncate">{product.name}</h3>
+            <h3 className="text-white font-medium truncate">
+              {product.name}
+            </h3>
             <p className="text-gray-300 font-bold">
               ₹{Number(product.price).toLocaleString("en-IN")}
             </p>

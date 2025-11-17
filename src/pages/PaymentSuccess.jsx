@@ -1,65 +1,66 @@
-import { Link } from 'react-router-dom';
-import { CheckCircle2 } from 'lucide-react';
-import Confetti from 'react-confetti';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from "react-router-dom";
+import { CheckCircle2 } from "lucide-react";
+import Confetti from "react-confetti";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import api from "../utils/api";
 
 const PaymentSuccess = () => {
+  const [params] = useSearchParams();
+  const sessionId = params.get("session_id");
+  const [verified, setVerified] = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowConfetti(false), 5000); // stop confetti after 5s
+    const verifyPayment = async () => {
+      try {
+        await api.get(`/orders/verify-payment/?session_id=${sessionId}`);
+        setVerified(true);
+      } catch (err) {
+        setVerified(false);
+      }
+    };
+
+    if (sessionId) verifyPayment();
+
+    const timer = setTimeout(() => setShowConfetti(false), 4000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [sessionId]);
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-slate-900 px-4">
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
-      
+
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="bg-slate-800 rounded-xl shadow-lg p-8 text-center max-w-md w-full"
+        transition={{ duration: 0.4 }}
+        className="bg-slate-800 rounded-xl p-8 shadow-lg max-w-md w-full text-center"
       >
-        <motion.div
-          initial={{ rotate: -20, scale: 0 }}
-          animate={{ rotate: 0, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 10 }}
-        >
-          <CheckCircle2 className="text-green-400 mx-auto mb-4" size={64} />
-        </motion.div>
+        <CheckCircle2 size={64} className="mx-auto text-green-400 mb-4" />
 
-        <motion.h2
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="text-3xl font-bold text-green-300 mb-2"
-        >
-          Payment Successful!
-        </motion.h2>
+        <h1 className="text-3xl font-bold text-green-300 mb-2">
+          {verified ? "Payment Successful" : "Processing Payment..."}
+        </h1>
 
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.4 }}
-          className="text-gray-300 mb-6"
-        >
-          Thank you for your order. It has been placed and is being processed.
-        </motion.p>
+        <p className="text-gray-300 mb-4">
+          {verified
+            ? "Your order has been confirmed and is being processed."
+            : "Please wait while we verify your payment."}
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
+        <p className="text-xs text-gray-400 mb-6">
+          Payment Reference: {sessionId}
+        </p>
+
+        {verified && (
           <Link
             to="/orders"
-            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition duration-300"
+            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md"
           >
             View Orders
           </Link>
-        </motion.div>
+        )}
       </motion.div>
     </div>
   );

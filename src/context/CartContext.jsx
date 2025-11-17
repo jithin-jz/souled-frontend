@@ -1,133 +1,159 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../utils/api';
-import { useAuth } from './AuthContext';
+// src/context/CartContext.jsx
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../utils/api";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user, updateUserData } = useAuth();
+  const { user } = useAuth();
 
+  // cart: backend cart items -> [{ id, product: {...}, quantity }]
   const [cart, setCart] = useState([]);
+  // wishlistItems: backend wishlist items -> [{ id, product: {...} }]
+  const [wishlistItems, setWishlistItems] = useState([]);
+  // wishlist: exposed to UI -> array of product objects for backward compatibility
   const [wishlist, setWishlist] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
+  // Load cart + wishlist when user logs in (or clear when logged out)
   useEffect(() => {
     if (user) {
-      fetchUserData();
+      setLoading(true);
+      Promise.all([loadCart(), loadWishlist()]).finally(() => setLoading(false));
     } else {
       setCart([]);
+      setWishlistItems([]);
       setWishlist([]);
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const fetchUserData = async () => {
+  // -------------------------
+  // Backend loaders
+  // -------------------------
+  const loadCart = async () => {
     try {
-      const res = await api.get(`/users/${user.id}`);
-      setCart(res.data.cart || []);
-      setWishlist(res.data.wishlist || []);
-    } catch {
-      // Silently fail
-    } finally {
-      setLoading(false);
+      const res = await api.get("/cart/");
+      // backend returns { id, items: [{ id, product, quantity }] }
+      setCart(res.data.items || []);
+      return res.data;
+    } catch (err) {
+      // silent fail
+      return null;
     }
   };
 
-  // ========== CART ==========
-  const addToCart = async (product) => {
+  const loadWishlist = async () => {
+    try {
+      const res = await api.get("/cart/wishlist/");
+      // res.data.items -> [{ id: wishlist_item_id, product: {...} }]
+      const items = res.data.items || [];
+      setWishlistItems(items);
+      // expose just product objects for compatibility with existing UI
+      setWishlist(items.map((it) => it.product));
+      return res.data;
+    } catch (err) {
+      // silent fail
+      setWishlistItems([]);
+      setWishlist([]);
+      return null;
+    }
+  };
+
+  // -------------------------
+  // CART actions
+  // -------------------------
+  const addToCart = async (product, quantity = 1) => {
     if (!user) return;
-
-    const existing = cart.find(item => item.id === product.id);
-    const updatedCart = existing
-      ? cart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
-            : item
-        )
-      : [...cart, { ...product, quantity: 1 }];
-
     try {
-      await api.patch(`/users/${user.id}`, { cart: updatedCart });
-      setCart(updatedCart);
-    } catch {
-      // Silently fail
+      await api.post("/cart/add/", { product_id: product.id, quantity });
+      await loadCart();
+    } catch (err) {
+      // silent fail
     }
   };
 
-  const removeFromCart = async (productId) => {
-    const updatedCart = cart.filter(item => item.id !== productId);
-
+  const removeFromCart = async (itemId) => {
     try {
-      await api.patch(`/users/${user.id}`, { cart: updatedCart });
-      setCart(updatedCart);
-    } catch {
-      // Silently fail
+      await api.delete(`/cart/remove/${itemId}/`);
+      await loadCart();
+    } catch (err) {
+      // silent fail
     }
   };
 
-  const updateQuantity = async (productId, newQty) => {
-    if (newQty < 1) return removeFromCart(productId);
-
-    const updatedCart = cart.map(item =>
-      item.id === productId ? { ...item, quantity: newQty } : item
-    );
-
+  const updateQuantity = async (itemId, newQty) => {
+    if (newQty < 1) return removeFromCart(itemId);
     try {
-      await api.patch(`/users/${user.id}`, { cart: updatedCart });
-      setCart(updatedCart);
-    } catch {
-      // Silently fail
+      await api.patch(`/cart/update/${itemId}/`, { quantity: newQty });
+      await loadCart();
+    } catch (err) {
+      // silent fail
     }
   };
 
   const clearCart = async () => {
     try {
-      await api.patch(`/users/${user.id}`, { cart: [] });
+      // Remove each item (backend doesn't expose a clear endpoint)
+      const items = [...cart];
+      for (const it of items) {
+        await api.delete(`/cart/remove/${it.id}/`);
+      }
       setCart([]);
-    } catch {
-      // Silently fail
+    } catch (err) {
+      // silent fail
     }
   };
 
-  const cartCount = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-
-  // ========== WISHLIST ==========
+  // -------------------------
+  // WISHLIST actions (same context)
+  // -------------------------
   const addToWishlist = async (product) => {
     if (!user) return;
-
-    const exists = wishlist.some(item => item.id === product.id);
-    if (exists) return;
-
-    const updatedWishlist = [...wishlist, product];
-
     try {
-      const res = await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
-      setWishlist(updatedWishlist);
-      updateUserData && updateUserData(res.data);
-    } catch {
-      // Silently fail
+      await api.post("/cart/wishlist/add/", { product_id: product.id });
+      await loadWishlist();
+    } catch (err) {
+      // silent fail
     }
   };
 
   const removeFromWishlist = async (productId) => {
-    const updatedWishlist = wishlist.filter(item => item.id !== productId);
-
+    if (!user) return;
     try {
-      const res = await api.patch(`/users/${user.id}`, { wishlist: updatedWishlist });
-      setWishlist(updatedWishlist);
-      updateUserData && updateUserData(res.data);
-    } catch {
-      // Silently fail
+      // find wishlist item id by product id
+      const item = wishlistItems.find((it) => it.product?.id === productId);
+      if (!item) return;
+      await api.delete(`/cart/wishlist/remove/${item.id}/`);
+      await loadWishlist();
+    } catch (err) {
+      // silent fail
     }
   };
+
+  const isProductWishlisted = (productId) => {
+    return wishlist.some((p) => p.id === productId);
+  };
+
+  // -------------------------
+  // Derived values
+  // -------------------------
+  const cartCount = cart.reduce((sum, it) => sum + (it.quantity || 1), 0);
+
+  const cartTotal = cart.reduce(
+    (sum, it) => sum + (it.product?.price || 0) * (it.quantity || 1),
+    0
+  );
 
   const wishlistCount = wishlist.length;
 
   return (
     <CartContext.Provider
       value={{
-        // Cart
+        // cart
         cart,
         cartCount,
         cartTotal,
@@ -136,14 +162,17 @@ export const CartProvider = ({ children }) => {
         updateQuantity,
         clearCart,
 
-        // Wishlist
+        // wishlist (exposed as array of product objects for backward compatibility)
         wishlist,
         wishlistCount,
         addToWishlist,
         removeFromWishlist,
+        isProductWishlisted,
 
-        // Other
+        // meta
         loading,
+        reloadCart: loadCart,
+        reloadWishlist: loadWishlist,
       }}
     >
       {children}

@@ -35,8 +35,15 @@ const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  const { wishlist, addToWishlist, removeFromWishlist, addToCart, cart } =
-    useCart();
+  const {
+    wishlist,
+    addToWishlist,
+    removeFromWishlist,
+    addToCart,
+    isProductWishlisted,
+    cart,
+  } = useCart();
+
   const { user } = useAuth();
 
   // --------------------------------------
@@ -47,26 +54,23 @@ const Products = () => {
       const cat =
         location.state.category.toLowerCase() === "men" ? "Men" : "Women";
       setSelectedCategories([cat]);
-      window.history.replaceState({}, document.title); // clean state
+      window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
   // --------------------------------------
-  // Fetch Products with backend filters
+  // Fetch Products using backend filtering
   // --------------------------------------
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const params = {};
 
-        // Search
         if (searchTerm.trim()) params.search = searchTerm;
 
-        // Category
         if (selectedCategories.length === 1)
           params.category = selectedCategories[0].toLowerCase();
 
-        // Price range
         if (selectedPrices.length === 1) {
           const range = selectedPrices[0];
           params.min_price = range.min;
@@ -96,9 +100,7 @@ const Products = () => {
         return;
       }
 
-      const isInWishlist = wishlist.some((item) => item.id === product.id);
-
-      if (isInWishlist) {
+      if (isProductWishlisted(product.id)) {
         removeFromWishlist(product.id);
         toast.info(`${product.name} removed from wishlist`);
       } else {
@@ -106,7 +108,7 @@ const Products = () => {
         toast.success(`${product.name} added to wishlist`);
       }
     },
-    [user, wishlist, addToWishlist, removeFromWishlist]
+    [user, isProductWishlisted, addToWishlist, removeFromWishlist]
   );
 
   // --------------------------------------
@@ -119,7 +121,7 @@ const Products = () => {
         return;
       }
 
-      const isInCart = cart.some((item) => item.id === product.id);
+      const isInCart = cart.some((item) => item.product.id === product.id);
 
       if (isInCart) {
         toast.info(`${product.name} is already in the cart`);
@@ -132,7 +134,7 @@ const Products = () => {
   );
 
   // --------------------------------------
-  // Group by category sections
+  // Group products by category
   // --------------------------------------
   const groupedByCategory = useMemo(
     () =>

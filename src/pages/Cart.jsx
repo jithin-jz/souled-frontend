@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const { cart, cartTotal, removeFromCart, updateQuantity, clearCart } = useCart();
 
   const handleCheckout = () => {
-    toast.success('Proceeding to checkout');
+    toast.success("Proceeding to checkout");
   };
 
   if (cart.length === 0) {
@@ -89,45 +89,46 @@ const Cart = () => {
   );
 };
 
-// Inline CartItem Component
+// =============================
+// Fixed CartItem Component
+// =============================
 const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
+  const product = item.product;
   const [quantity, setQuantity] = useState(item.quantity || 1);
 
   const handleDecrease = () => {
-    if (quantity > 1) {
-      const newQty = quantity - 1;
+    const newQty = quantity - 1;
+    if (newQty >= 1) {
       setQuantity(newQty);
-      onUpdateQuantity(item.id, newQty);
+      onUpdateQuantity(item.id, newQty); // item.id = cart_item id
     }
   };
 
   const handleIncrease = () => {
-    if (quantity < 10) {
-      const newQty = quantity + 1;
-      setQuantity(newQty);
-      onUpdateQuantity(item.id, newQty);
-    }
+    const newQty = quantity + 1;
+    setQuantity(newQty);
+    onUpdateQuantity(item.id, newQty);
   };
 
   const handleRemove = () => {
-    onRemove(item.id);
-    toast.success(`${item.name} removed from cart`);
+    onRemove(item.id); // remove by cart item id
+    toast.success(`${product.name} removed from cart`);
   };
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
       {/* Product Image */}
       <img
-        src={item.image}
-        alt={item.name}
+        src={product.image}
+        alt={product.name}
         className="w-24 h-24 object-cover rounded-xl border border-gray-700"
       />
 
       {/* Product Info */}
       <div className="flex-1 w-full sm:w-auto">
-        <h3 className="text-lg font-semibold text-white">{item.name}</h3>
+        <h3 className="text-lg font-semibold text-white">{product.name}</h3>
         <p className="text-green-400 font-bold mt-1">
-          ₹{(item.price * quantity).toFixed(2)}
+          ₹{(product.price * quantity).toFixed(2)}
         </p>
       </div>
 
