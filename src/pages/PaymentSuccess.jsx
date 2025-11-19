@@ -1,67 +1,78 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { CheckCircle2 } from "lucide-react";
-import Confetti from "react-confetti";
-import { motion } from "framer-motion";
+// src/components/PaymentSuccess.js
+
 import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import { toast } from "react-toastify";
+import { useCart } from "../context/CartContext";
 
 const PaymentSuccess = () => {
-  const [params] = useSearchParams();
-  const sessionId = params.get("session_id");
-  const [verified, setVerified] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(true);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { clearCart } = useCart();
+  
+  const [verificationStatus, setVerificationStatus] = useState("Verifying payment...");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+
+    if (!sessionId) {
+      toast.error("Missing payment session ID.");
+      navigate("/");
+      return;
+    }
+
     const verifyPayment = async () => {
       try {
-        await api.get(`/orders/verify-payment/?session_id=${sessionId}`);
-        setVerified(true);
+        // CALLS THE FIXED DJANGO VERIFY ENDPOINT
+        const res = await api.get(`/orders/verify-payment/?session_id=${sessionId}`);
+        
+        const { status, payment_verified } = res.data;
+        if (payment_verified) {
+
+          setVerificationStatus("Payment successful! Your order is confirmed.");
+          clearCart(); // Clear cart only after successful verification
+        } else {
+          setVerificationStatus("Payment pending or failed. Please contact support.");
+        }
+        
       } catch (err) {
-        setVerified(false);
+        setVerificationStatus("An error occurred during verification. Please check your orders page.");
+        console.error("Verification Error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (sessionId) verifyPayment();
-
-    const timer = setTimeout(() => setShowConfetti(false), 4000);
-    return () => clearTimeout(timer);
-  }, [sessionId]);
+    verifyPayment();
+  }, [searchParams, navigate, clearCart]);
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-slate-900 px-4">
-      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
-
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="bg-slate-800 rounded-xl p-8 shadow-lg max-w-md w-full text-center"
-      >
-        <CheckCircle2 size={64} className="mx-auto text-green-400 mb-4" />
-
-        <h1 className="text-3xl font-bold text-green-300 mb-2">
-          {verified ? "Payment Successful" : "Processing Payment..."}
-        </h1>
-
-        <p className="text-gray-300 mb-4">
-          {verified
-            ? "Your order has been confirmed and is being processed."
-            : "Please wait while we verify your payment."}
-        </p>
-
-        <p className="text-xs text-gray-400 mb-6">
-          Payment Reference: {sessionId}
-        </p>
-
-        {verified && (
-          <Link
-            to="/orders"
-            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md"
-          >
-            View Orders
-          </Link>
+    <div className="min-h-screen bg-gray-900 text-white py-20 px-4 flex items-center justify-center">
+      <div className="max-w-xl mx-auto bg-gray-800 rounded-xl p-8 shadow-xl text-center space-y-6">
+        {loading ? (
+          <>
+            <svg className="animate-spin h-8 w-8 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h2 className="text-2xl font-semibold">Processing Payment...</h2>
+          </>
+        ) : (
+          <>
+            <h2 className={`text-2xl font-bold ${verificationStatus.includes("successful") ? 'text-green-400' : 'text-red-400'}`}>
+              {verificationStatus}
+            </h2>
+            <button
+              onClick={() => navigate("/orders")}
+              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg font-semibold"
+            >
+              Go to My Orders
+            </button>
+          </>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };

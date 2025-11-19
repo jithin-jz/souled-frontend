@@ -13,7 +13,7 @@ const Orders = () => {
 
     const fetchOrders = async () => {
       try {
-        // backend MUST expose this route: /api/orders/my/
+        // Fetches data from the /api/orders/my/ route exposed by the backend ListAPIView
         const res = await api.get("/orders/my/");
         setOrders(res.data || []);
       } catch (err) {
@@ -58,7 +58,9 @@ const Orders = () => {
               <div>
                 <h3 className="text-xl font-bold">Order #{order.id}</h3>
                 <p className="text-sm text-gray-400">
-                  {new Date(order.created_at).toLocaleString()}
+                  {/* IMPROVEMENT: Cleaner date formatting */}
+                  Placed on: {new Date(order.created_at).toLocaleDateString()}{" "}
+                  at {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
 
@@ -80,13 +82,20 @@ const Orders = () => {
             {/* Address */}
             <div className="mb-4">
               <h4 className="text-md font-semibold">Shipping Address</h4>
+              {/* IMPROVEMENT: Defensive check for order.address */}
               <div className="text-gray-300 text-sm mt-1 leading-relaxed">
-                <p>{order.address.full_name}</p>
-                <p>{order.address.phone}</p>
-                <p>
-                  {order.address.street}, {order.address.city} -{" "}
-                  {order.address.pincode}
-                </p>
+                {order.address ? (
+                  <>
+                    <p>{order.address.full_name}</p>
+                    <p>{order.address.phone}</p>
+                    <p>
+                      {order.address.street}, {order.address.city} -{" "}
+                      {order.address.pincode}
+                    </p>
+                  </>
+                ) : (
+                  <p>Address information missing.</p>
+                )}
               </div>
             </div>
 
@@ -103,26 +112,31 @@ const Orders = () => {
               <h4 className="font-semibold mb-3">Items</h4>
 
               <div className="divide-y divide-slate-700">
-                {order.items.map((item) => (
-                  <div key={item.id} className="flex justify-between py-3">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={item.image}
-                        alt={item.product_name}
-                        className="w-14 h-14 object-cover rounded-lg border border-slate-700"
-                      />
-                      <div>
-                        <p className="font-medium">{item.product_name}</p>
-                        <p className="text-sm text-gray-400">
-                          Qty: {item.quantity}
-                        </p>
+                {/* IMPROVEMENT: Defensive check for order.items */}
+                {order.items?.length > 0 ? (
+                  order.items.map((item) => (
+                    <div key={item.id} className="flex justify-between py-3">
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={item.image}
+                          alt={item.product_name}
+                          className="w-14 h-14 object-cover rounded-lg border border-slate-700"
+                        />
+                        <div>
+                          <p className="font-medium">{item.product_name}</p>
+                          <p className="text-sm text-gray-400">
+                            Qty: {item.quantity}
+                          </p>
+                        </div>
                       </div>
+                      <p className="text-green-400 font-semibold">
+                        ₹{(item.price * item.quantity).toFixed(2)}
+                      </p>
                     </div>
-                    <p className="text-green-400 font-semibold">
-                      ₹{(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-gray-400 py-3">No items found for this order.</p>
+                )}
               </div>
             </div>
 
@@ -131,14 +145,15 @@ const Orders = () => {
               <p className="text-gray-300 text-sm">
                 Subtotal:{" "}
                 <span className="text-white font-semibold">
-                  ₹{order.total_amount.toFixed(2)}
+                  {/* Ensure total_amount is a number before calling toFixed */}
+                  ₹{Number(order.total_amount).toFixed(2)}
                 </span>
               </p>
               <p className="text-gray-300 text-sm">
                 Shipping: <span className="text-green-400">Free</span>
               </p>
               <p className="text-xl font-bold mt-2 text-white">
-                Total: ₹{order.total_amount.toFixed(2)}
+                Total: ₹{Number(order.total_amount).toFixed(2)}
               </p>
             </div>
           </div>
