@@ -1,115 +1,84 @@
-// src/context/AuthContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../utils/api";
+import { authApi } from "../api/authApi";
+import { setLogoutCallback } from "../utils/api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-  // Load current user on refresh
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const res = await api.get("/auth/me/");
-        setUser(res.data);
-      } catch {
+    const logout = useCallback(async () => {
+        try {
+            await authApi.logout();
+        } catch (err) {
+            console.warn("Logout request failed, clearing state anyway.");
+        }
         setUser(null);
-      } finally {
-        setLoading(false);
-      }
+        navigate("/login");
+    }, [navigate]);
+
+    const loadUser = useCallback(async () => {
+        try {
+            const res = await authApi.me();
+            setUser(res.data);
+            return res.data;
+        } catch {
+            setUser(null);
+            return null;
+        }
+    }, []);
+
+    useEffect(() => {
+        setLogoutCallback(logout);
+    }, [logout]);
+
+    useEffect(() => {
+        loadUser().finally(() => setLoading(false));
+    }, [loadUser]);
+
+    const handleAuthSuccess = async () => {
+        const userData = await loadUser();
+        if (userData?.is_staff) {
+            navigate("/admin/dashboard");
+        } else {
+            navigate("/");
+        }
     };
 
-    loadUser();
-  }, []);
+    // Keep positional args since UI already matches
+    const login = async (email, password) => {
+        await authApi.login(email, password);
+        await handleAuthSuccess();
+    };
 
-  // Small delay to allow HttpOnly cookies to save before calling /me
-  const waitForCookies = () =>
-    new Promise((resolve) => setTimeout(resolve, 120));
+    const register = async (first_name, last_name, email, password) => {
+        await authApi.register(first_name, last_name, email, password);
+        await handleAuthSuccess();
+    };
 
-  // ---------------------------------------------------------
-  // LOGIN
-  // ---------------------------------------------------------
-  const login = async (email, password) => {
-    await api.post("/auth/login/", { email, password });
+    const googleLogin = async (credential) => {
+        await authApi.googleLogin(credential);
+        await handleAuthSuccess();
+    };
 
-    await waitForCookies();
-
-    const res = await api.get("/auth/me/");
-    setUser(res.data);
-
-    if (res.data.is_staff) navigate("/admin/dashboard");
-    else navigate("/");
-  };
-
-  // ---------------------------------------------------------
-  // REGISTER
-  // ---------------------------------------------------------
-  const register = async (fullName, email, password) => {
-    const [first_name, ...rest] = fullName.trim().split(" ");
-    const last_name = rest.join(" ");
-
-    await api.post("/auth/register/", {
-      first_name,
-      last_name,
-      email,
-      password,
-    });
-
-    await waitForCookies();
-
-    const res = await api.get("/auth/me/");
-    setUser(res.data);
-
-    navigate("/");
-  };
-
-  // ---------------------------------------------------------
-  // GOOGLE LOGIN
-  // ---------------------------------------------------------
-  const googleLogin = async (credential) => {
-    await api.post("/auth/google/", { id_token: credential });
-
-    await waitForCookies();
-
-    const res = await api.get("/auth/me/");
-    setUser(res.data);
-
-    if (res.data.is_staff) navigate("/admin/dashboard");
-    else navigate("/");
-  };
-
-  // ---------------------------------------------------------
-  // LOGOUT
-  // ---------------------------------------------------------
-  const logout = async () => {
-    try {
-      await api.post("/auth/logout/");
-    } catch {}
-    setUser(null);
-    navigate("/login");
-  };
-
-  const isAdmin = Boolean(user?.is_staff);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        isAdmin,
-        login,
-        register,
-        googleLogin,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                isAdmin: Boolean(user?.is_staff),
+                login,
+                register,
+                googleLogin,
+                logout,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = () => useContext(AuthContext);

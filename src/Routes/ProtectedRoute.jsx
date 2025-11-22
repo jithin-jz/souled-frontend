@@ -1,25 +1,15 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
 
-const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+const ProtectedRoute = () => {
+    const { user, loading } = useAuth();
 
-  // Do not decide until backend finishes verifying cookie
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <Loader />
-      </div>
-    );
-  }
+    if (loading) return <Loader />;
 
-  // Not logged in after loading → redirect
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+    if (!user) return <Navigate to="/login" replace />;
 
-  return children;
+    return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -2,111 +2,118 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 const Login = () => {
-  const { login, googleLogin } = useAuth();
+    const { login, googleLogin } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+    const { email, password } = formData;
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
 
-    try {
-      await login(email, password);
-      // Redirect handled inside AuthContext
-    } catch (err) {
-      const status = err?.response?.status;
-      if (status === 400 || status === 401) {
-        setError("Invalid email or password");
-      } else {
-        setError("Login failed. Try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    const onChange = (e) =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onGoogleSuccess = async (response) => {
-    setGoogleLoading(true);
-    setError("");
+    const submit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-    try {
-      await googleLogin(response.credential);
-      // Redirect handled inside AuthContext
-    } catch {
-      setError("Google login failed. Try again.");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
+        try {
+            // FIX: send positional args, not an object
+            await login(email, password);
+            toast.success("Logged in successfully!");
+        } catch (err) {
+            let msg = "Invalid email or password.";
+            if (err?.response?.data?.detail) msg = err.response.data.detail;
+            toast.error(msg);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
-      <div className="max-w-md w-full bg-slate-800 p-8 rounded-xl border border-slate-700">
-        <h2 className="text-3xl text-white font-bold text-center mb-4">Login</h2>
+    const onGoogleSuccess = async (res) => {
+        setGoogleLoading(true);
+        try {
+            await googleLogin(res.credential);
+            toast.success("Google login successful!");
+        } catch {
+            toast.error("Google login failed. Try again.");
+        } finally {
+            setGoogleLoading(false);
+        }
+    };
 
-        {error && <p className="text-red-500 text-center">{error}</p>}
+    const disabled = loading || googleLoading;
 
-        <form className="space-y-4" onSubmit={submit}>
-          <input
-            type="email"
-            required
-            className="w-full bg-slate-700 text-white p-2 rounded"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
+            <div className="max-w-md w-full bg-slate-800 p-8 rounded-xl border border-slate-700">
+                <h2 className="text-3xl text-white font-bold text-center mb-6">
+                    Welcome Back 🚀
+                </h2>
 
-          <input
-            type="password"
-            required
-            className="w-full bg-slate-700 text-white p-2 rounded"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+                <form onSubmit={submit} className="space-y-4">
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        placeholder="Email"
+                        value={email}
+                        onChange={onChange}
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
+                    />
 
-          <button
-            type="submit"
-            disabled={loading || googleLoading}
-            className={`w-full p-2 rounded text-white transition 
-              ${
-                loading || googleLoading
-                  ? "bg-red-800 cursor-not-allowed"
-                  : "bg-red-600 hover:bg-red-700"
-              }
-            `}
-          >
-            {loading ? "Signing in..." : "Login"}
-          </button>
-        </form>
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        placeholder="Password"
+                        value={password}
+                        onChange={onChange}
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
+                    />
 
-        <div className="mt-4 flex justify-center">
-          {googleLoading ? (
-            <div className="text-gray-300 text-sm">Connecting to Google…</div>
-          ) : (
-            <GoogleLogin
-              onSuccess={onGoogleSuccess}
-              onError={() => setError("Google login failed")}
-            />
-          )}
+                    <button
+                        type="submit"
+                        disabled={disabled}
+                        className={`w-full p-3 rounded text-lg font-semibold text-white transition
+                        ${disabled ? "bg-red-800 opacity-70 cursor-not-allowed"
+                                   : "bg-red-600 hover:bg-red-700"}`}
+                    >
+                        {loading ? "Signing in..." : "Login"}
+                    </button>
+                </form>
+
+                <div className="mt-6 flex flex-col items-center space-y-3">
+                    <div className="text-gray-500">OR</div>
+                    {googleLoading ? (
+                        <p className="text-gray-300 text-sm">Connecting to Google...</p>
+                    ) : (
+                        <GoogleLogin
+                            onSuccess={onGoogleSuccess}
+                            onError={() => toast.error("Google sign-in error")}
+                            disabled={loading}
+                        />
+                    )}
+                </div>
+
+                <p className="text-gray-400 text-center mt-6">
+                    Don’t have an account?{" "}
+                    <Link
+                        to="/register"
+                        className="text-red-400 hover:text-red-300 underline font-medium"
+                    >
+                        Register
+                    </Link>
+                </p>
+            </div>
         </div>
-
-        <p className="text-gray-400 text-center mt-4">
-          Don’t have an account?{" "}
-          <Link to="/register" className="text-red-400 underline">
-            Register
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Login;

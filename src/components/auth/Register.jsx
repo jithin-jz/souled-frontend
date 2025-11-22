@@ -5,114 +5,143 @@ import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 
 const Register = () => {
-  const { register, googleLogin } = useAuth();
+    const { register, googleLogin } = useAuth();
 
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+    });
 
-  const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+    const { firstName, lastName, email, password } = formData;
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
 
-    try {
-      await register(fullName, email, password);
-      toast.success("Account created");
-      // redirect happens inside AuthContext
-    } catch (err) {
-      const status = err?.response?.status;
-      if (status === 400) toast.error("Email already in use");
-      else toast.error("Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const onChange = (e) =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onGoogleSuccess = async (res) => {
-    setGoogleLoading(true);
+    const submit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-    try {
-      await googleLogin(res.credential);
-      toast.success("Google login success");
-      // redirect handled by AuthContext
-    } catch {
-      toast.error("Google login failed");
-    } finally {
-      setGoogleLoading(false);
-    }
-  };
+        try {
+            // FIX: Send positional arguments expected by AuthContext
+            await register(firstName, lastName, email, password);
+            toast.success("Account created successfully");
+        } catch (err) {
+            const data = err?.response?.data;
+            let msg = "Registration failed";
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
-      <div className="max-w-md w-full bg-slate-800 p-8 rounded-xl border border-slate-700">
+            if (data?.email) msg = data.email[0];
+            else if (data?.password) msg = data.password[0];
 
-        <h2 className="text-3xl text-white font-bold text-center mb-4">Register</h2>
+            toast.error(msg);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        <form className="space-y-4" onSubmit={submit}>
-          <input
-            type="text"
-            required
-            className="w-full bg-slate-700 text-white p-2 rounded"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
+    const onGoogleSuccess = async (response) => {
+        setGoogleLoading(true);
+        try {
+            await googleLogin(response.credential);
+            toast.success("Google login successful");
+        } catch {
+            toast.error("Google sign-in failed");
+        } finally {
+            setGoogleLoading(false);
+        }
+    };
 
-          <input
-            type="email"
-            required
-            className="w-full bg-slate-700 text-white p-2 rounded"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    const disabled = loading || googleLoading;
 
-          <input
-            type="password"
-            required
-            className="w-full bg-slate-700 text-white p-2 rounded"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
+            <div className="max-w-md w-full bg-slate-800 p-8 rounded-xl border border-slate-700">
+                <h2 className="text-3xl text-white font-bold text-center mb-6">
+                    Create Account
+                </h2>
 
-          <button
-            type="submit"
-            disabled={loading || googleLoading}
-            className={`w-full p-2 rounded text-white transition 
-            ${
-              loading || googleLoading
-                ? "bg-red-800 cursor-not-allowed"
-                : "bg-red-600 hover:bg-red-700"
-            }`}
-          >
-            {loading ? "Creating..." : "Register"}
-          </button>
-        </form>
+                <form className="space-y-4" onSubmit={submit}>
+                    <input
+                        type="text"
+                        name="firstName"
+                        required
+                        value={firstName}
+                        onChange={onChange}
+                        placeholder="First Name"
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600"
+                    />
 
-        <div className="mt-4 flex justify-center">
-          {googleLoading ? (
-            <p className="text-gray-300 text-sm">Connecting to Google…</p>
-          ) : (
-            <GoogleLogin
-              onSuccess={onGoogleSuccess}
-              onError={() => toast.error("Google login error")}
-            />
-          )}
+                    <input
+                        type="text"
+                        name="lastName"
+                        required
+                        value={lastName}
+                        onChange={onChange}
+                        placeholder="Last Name"
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600"
+                    />
+
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                        value={email}
+                        onChange={onChange}
+                        placeholder="Email"
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600"
+                    />
+
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        minLength={8}
+                        value={password}
+                        onChange={onChange}
+                        placeholder="Password (min 8 characters)"
+                        className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600"
+                    />
+
+                    <button
+                        type="submit"
+                        disabled={disabled}
+                        className={`w-full p-3 rounded text-lg font-semibold text-white transition 
+                        ${disabled ? "bg-red-800 opacity-70 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"}`}
+                    >
+                        {loading ? "Creating..." : "Register"}
+                    </button>
+                </form>
+
+                <div className="mt-6 flex flex-col items-center space-y-3">
+                    <div className="text-gray-500">OR</div>
+
+                    {googleLoading ? (
+                        <p className="text-gray-300 text-sm">Connecting...</p>
+                    ) : (
+                        <GoogleLogin
+                            onSuccess={onGoogleSuccess}
+                            onError={() => toast.error("Google sign-in error")}
+                            disabled={loading}
+                        />
+                    )}
+                </div>
+
+                <p className="text-gray-400 text-center mt-6">
+                    Already have an account?{" "}
+                    <Link
+                        to="/login"
+                        className="text-red-400 hover:text-red-300 underline font-medium"
+                    >
+                        Login
+                    </Link>
+                </p>
+            </div>
         </div>
-
-        <p className="text-gray-400 text-center mt-4">
-          Already registered?{" "}
-          <Link to="/login" className="text-red-400 underline">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Register;

@@ -1,19 +1,22 @@
+// src/api/authApi.js
 import api from "../utils/api";
 
 export const authApi = {
-  login: (email, password) =>
-    api.post("/auth/login/", { email, password }),
+    login: (email, password) =>
+        api.post("/login/", { email, password }),
 
-  register: (first_name, last_name, email, password) =>
-    api.post("/auth/register/", {
-      first_name,
-      last_name,
-      email,
-      password,
-    }),
+    register: (first_name, last_name, email, password) =>
+        api.post("/register/", {
+            first_name,
+            last_name,
+            email,
+            password,
+        }),
 
-  googleLogin: (id_token) =>
-    api.post("/auth/google/", { id_token }),
+    googleLogin: (id_token) =>
+        api.post("/google/", { id_token }),
 
-  logout: () => api.post("/auth/logout/"),
+    logout: () => api.post("/logout/"),
+
+    me: () => api.get("/me/"),
 };

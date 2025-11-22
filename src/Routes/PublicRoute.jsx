@@ -1,24 +1,15 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/Loader";
 
-const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+const PublicRoute = () => {
+    const { user, loading } = useAuth();
 
-  // Avoid redirecting before auth initializes
-  if (loading) {
-    return (
-      <div className="text-white p-10 text-center">
-        Loading...
-      </div>
-    );
-  }
+    if (loading) return <Loader />;
 
-  // No user after loading → redirect
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+    if (user) return <Navigate to="/" replace />;
 
-  return children;
+    return <Outlet />;
 };
 
-export default ProtectedRoute;
+export default PublicRoute;

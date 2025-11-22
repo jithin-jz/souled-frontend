@@ -2,21 +2,17 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Contexts
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
-// Shared Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Loader from "./components/Loader";
 
-// Route Guards
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import PublicRoute from "./Routes/PublicRoute";
 import AdminRoute from "./Routes/AdminRoute";
 
-// User Pages
 import Home from "./pages/Home";
 import Products from "./pages/Products/Products";
 import SingleProduct from "./pages/SingleProduct";
@@ -28,11 +24,9 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import OrderSuccess from "./pages/OrderSuccess";
 import ProfileDetails from "./pages/ProfileDetails";
 
-// Auth Pages
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 
-// Admin Pages
 import Dashboard from "./admin/Dashboard";
 import Users from "./admin/Users";
 import AdminProducts from "./admin/Products";
@@ -43,239 +37,75 @@ import AdminUserDetails from "./admin/AdminUserDetails";
 import AdminOrderManagement from "./admin/AdminOrderManagement";
 
 
-/* -------------------------------------------------------------------
-   NAVBAR + FOOTER WRAPPERS (Prevent rerender loops)
--------------------------------------------------------------------- */
-const NavbarWrapper = () => {
-  const { user } = useAuth();
-  if (user?.is_staff) return null;        // hide on admin pages
-  return <Navbar />;
-};
+const Layout = ({ children }) => {
+    const { user, loading } = useAuth();
+    if (loading) return <Loader />;
 
-const FooterWrapper = () => {
-  const { user } = useAuth();
-  if (user?.is_staff) return null;
-  return <Footer />;
-};
+    const hideForAdmin = !user?.is_staff;
 
-
-/* -------------------------------------------------------------------
-   MAIN ROUTE WRAPPER (Stable, no re-mounts)
--------------------------------------------------------------------- */
-const MainRoutes = () => {
-  const { loading } = useAuth();
-
-  if (loading) return <Loader />;        // waits for /auth/me once
-
-  return (
-    <Routes>
-
-      {/* ---------------- PUBLIC ---------------- */}
-      <Route path="/" element={<Home />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/products/:id" element={<SingleProduct />} />
-
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <Register />
-          </PublicRoute>
-        }
-      />
-
-      {/* ---------------- USER PROTECTED ---------------- */}
-      <Route
-        path="/cart"
-        element={
-          <ProtectedRoute>
-            <Cart />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/wishlist"
-        element={
-          <ProtectedRoute>
-            <Wishlist />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/orders"
-        element={
-          <ProtectedRoute>
-            <Orders />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/payment"
-        element={
-          <ProtectedRoute>
-            <Payment />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/payment-success"
-        element={
-          <ProtectedRoute>
-            <PaymentSuccess />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* COD success page */}
-      <Route
-        path="/order-success"
-        element={
-          <ProtectedRoute>
-            <OrderSuccess />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfileDetails />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ---------------- ADMIN ---------------- */}
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <Dashboard />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/dashboard"
-        element={
-          <AdminRoute>
-            <Dashboard />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/users"
-        element={
-          <AdminRoute>
-            <Users />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/users/:id"
-        element={
-          <AdminRoute>
-            <AdminUserDetails />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/products"
-        element={
-          <AdminRoute>
-            <AdminProducts />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/products/add"
-        element={
-          <AdminRoute>
-            <AddProduct />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/products/edit/:id"
-        element={
-          <AdminRoute>
-            <EditProduct />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/orders"
-        element={
-          <AdminRoute>
-            <AdminOrderManagement />
-          </AdminRoute>
-        }
-      />
-
-      <Route
-        path="/admin/reports"
-        element={
-          <AdminRoute>
-            <Reports />
-          </AdminRoute>
-        }
-      />
-
-    </Routes>
-  );
+    return (
+        <>
+            {hideForAdmin && <Navbar />}
+            <main className="min-h-screen bg-gray-900 text-white">
+                {children}
+            </main>
+            {hideForAdmin && <Footer />}
+        </>
+    );
 };
 
 
-/* -------------------------------------------------------------------
-   ROOT APP (Correct placement, no more re-renders)
--------------------------------------------------------------------- */
 const App = () => (
-  <Router>
-    <AuthProvider>
-      <CartProvider>
+    <Router>
+        <AuthProvider>
+            <CartProvider>
 
-        <NavbarWrapper />
+                <Layout>
+                    <Routes>
 
-        <main className="min-h-screen bg-gray-900 text-white">
-          <MainRoutes />
-        </main>
+                        {/* Public routes */}
+                        <Route path="/" element={<Home />} />
+                        <Route path="/products" element={<Products />} />
+                        <Route path="/products/:id" element={<SingleProduct />} />
 
-        <FooterWrapper />
+                        {/* Public but redirect if logged in */}
+                        <Route element={<PublicRoute />}>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                        </Route>
 
-        <ToastContainer
-          position="bottom-right"
-          autoClose={500}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnHover
-          theme="colored"
-          toastClassName="text-xs px-3 py-1 rounded-full min-h-0 h-auto"
-          bodyClassName="m-0 p-0"
-        />
+                        {/* Auth-required user routes */}
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="/wishlist" element={<Wishlist />} />
+                            <Route path="/orders" element={<Orders />} />
+                            <Route path="/payment" element={<Payment />} />
+                            <Route path="/payment-success" element={<PaymentSuccess />} />
+                            <Route path="/order-success" element={<OrderSuccess />} />
+                            <Route path="/profile" element={<ProfileDetails />} />
+                        </Route>
 
-      </CartProvider>
-    </AuthProvider>
-  </Router>
+                        {/* Admin */}
+                        <Route element={<AdminRoute />}>
+                            <Route path="/admin" element={<Dashboard />} />
+                            <Route path="/admin/dashboard" element={<Dashboard />} />
+                            <Route path="/admin/users" element={<Users />} />
+                            <Route path="/admin/users/:id" element={<AdminUserDetails />} />
+                            <Route path="/admin/products" element={<AdminProducts />} />
+                            <Route path="/admin/products/add" element={<AddProduct />} />
+                            <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+                            <Route path="/admin/orders" element={<AdminOrderManagement />} />
+                            <Route path="/admin/reports" element={<Reports />} />
+                        </Route>
+
+                    </Routes>
+                </Layout>
+
+                <ToastContainer position="bottom-right" autoClose={1000} theme="colored" />
+
+            </CartProvider>
+        </AuthProvider>
+    </Router>
 );
 
 export default App;
