@@ -1,24 +1,15 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../api/authApi";
 import { setLogoutCallback } from "../utils/api";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
-    const logout = useCallback(async () => {
-        try {
-            await authApi.logout();
-        } catch (err) {
-            console.warn("Logout request failed, clearing state anyway.");
-        }
-        setUser(null);
-        navigate("/login");
-    }, [navigate]);
 
     const loadUser = useCallback(async () => {
         try {
@@ -32,36 +23,35 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        setLogoutCallback(logout);
-    }, [logout]);
-
-    useEffect(() => {
         loadUser().finally(() => setLoading(false));
     }, [loadUser]);
 
-    const handleAuthSuccess = async () => {
-        const userData = await loadUser();
-        if (userData?.is_staff) {
-            navigate("/admin/dashboard");
-        } else {
-            navigate("/");
-        }
-    };
+    const logout = useCallback(async () => {
+        try {
+            await authApi.logout();
+        } catch {}
+        setUser(null);
+        navigate("/login", { replace: true });
+    }, [navigate]);
 
-    // Keep positional args since UI already matches
+    useEffect(() => setLogoutCallback(logout), [logout]);
+
     const login = async (email, password) => {
         await authApi.login(email, password);
-        await handleAuthSuccess();
+        await loadUser();
+        navigate("/", { replace: true });
     };
 
     const register = async (first_name, last_name, email, password) => {
         await authApi.register(first_name, last_name, email, password);
-        await handleAuthSuccess();
+        await loadUser();
+        navigate("/", { replace: true });
     };
 
     const googleLogin = async (credential) => {
         await authApi.googleLogin(credential);
-        await handleAuthSuccess();
+        await loadUser();
+        navigate("/", { replace: true });
     };
 
     return (

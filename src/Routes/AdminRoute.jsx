@@ -5,11 +5,17 @@ import Loader from "../components/Loader";
 const AdminRoute = () => {
     const { user, loading, isAdmin } = useAuth();
 
-    if (loading) return <Loader />;
+    if (loading) {
+        return <Loader />;
+    }
 
-    if (!user) return <Navigate to="/login" replace />;
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
 
-    if (!isAdmin) return <Navigate to="/" replace />;
+    if (!isAdmin) {
+        return <Navigate to="/" replace />;
+    }
 
     return <Outlet />;
 };

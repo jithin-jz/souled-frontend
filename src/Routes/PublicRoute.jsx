@@ -3,11 +3,15 @@ import { useAuth } from "../context/AuthContext";
 import Loader from "../components/Loader";
 
 const PublicRoute = () => {
-    const { user, loading } = useAuth();
+    const { user, loading, isAdmin } = useAuth();
 
-    if (loading) return <Loader />;
+    if (loading) {
+        return <Loader />;
+    }
 
-    if (user) return <Navigate to="/" replace />;
+    if (user) {
+        return <Navigate to={isAdmin ? "/admin/dashboard" : "/"} replace />;
+    }
 
     return <Outlet />;
 };
