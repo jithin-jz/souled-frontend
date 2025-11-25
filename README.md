@@ -121,7 +121,7 @@ A full-stack eCommerce platform built with React, Vite, and Django REST Framewor
 ## 🏗 Project Structure
 
 ```
-souled-store/
+souled/
 ├── src/                    # Frontend source code
 │   ├── assets/            # Static assets (images, fonts, etc.)
 │   ├── components/        # Reusable UI components
