@@ -53,8 +53,8 @@ A full-stack eCommerce platform built with React, Vite, and Django REST Framewor
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/souled-store.git
-   cd souled-store
+   git clone https://github.com/jihin-jz/souled.git
+   cd souled
    ```
 
 2. Install dependencies:
