@@ -1,8 +1,28 @@
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../utils/api";
 
 const ProfileDetails = () => {
   const { user, loading } = useAuth();
+  const [addresses, setAddresses] = useState([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    loadAddresses();
+  }, [user]);
+
+  const loadAddresses = async () => {
+    try {
+      const res = await api.get("/orders/addresses/");
+      setAddresses(res.data);
+    } catch {
+      setAddresses([]);
+    } finally {
+      setLoadingAddresses(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -14,106 +34,71 @@ const ProfileDetails = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-center bg-slate-900 text-white px-4">
-        <div className="bg-slate-800 p-6 rounded-lg shadow max-w-md w-full border border-slate-700">
-          <h2 className="text-xl font-semibold mb-2">Please Log In</h2>
-          <p className="text-slate-400">You need to be logged in to view your profile.</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white text-center px-4">
+        <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+          <h2 className="text-lg font-semibold mb-2">Please Log In</h2>
+          <p className="text-slate-400 text-sm">
+            You need to be logged in to view your profile.
+          </p>
         </div>
       </div>
     );
   }
 
-  const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || "Not provided";
-
-  const joinDate = new Date(user.created_at).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const fullName =
+    `${user.first_name || ""} ${user.last_name || ""}`.trim() || user.email;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 mt-10 bg-slate-900 text-white rounded-lg shadow-lg border border-slate-700">
-      <h2 className="text-3xl font-bold text-red-500 mb-6">My Profile</h2>
+    <div className="max-w-xl mx-auto p-6 mt-10 bg-slate-900 text-white rounded-lg border border-slate-800 space-y-6">
+      <h2 className="text-2xl font-bold text-red-500">Account</h2>
 
-      {/* Basic Info */}
-      <div className="bg-slate-800 p-5 rounded-lg border border-slate-700 mb-6">
-        <h3 className="text-xl font-semibold mb-4">Account Information</h3>
-
-        <div className="space-y-4 text-slate-300">
-          <div>
-            <span className="font-semibold text-white">Full Name:</span> {fullName}
-          </div>
-
-          <div>
-            <span className="font-semibold text-white">Email:</span> {user.email}
-          </div>
-
-          <div>
-            <span className="font-semibold text-white">Account Type:</span>{" "}
-            {user.is_staff ? (
-              <span className="text-yellow-400 font-bold">Admin</span>
-            ) : (
-              <span className="text-green-400 font-bold">Customer</span>
-            )}
-          </div>
-
-          <div>
-            <span className="font-semibold text-white">Joined On:</span>{" "}
-            <span>{joinDate}</span>
-          </div>
-        </div>
+      {/* Basic info */}
+      <div className="space-y-2 text-slate-300">
+        <p>
+          <span className="font-semibold text-white">Name:</span> {fullName}
+        </p>
+        <p>
+          <span className="font-semibold text-white">Email:</span> {user.email}
+        </p>
       </div>
 
-      {/* Contact Info (placeholder for now) */}
-      <div className="bg-slate-800 p-5 rounded-lg border border-slate-700 mb-6">
-        <h3 className="text-xl font-semibold mb-4">Contact Details</h3>
+      {/* Saved Addresses (read only) */}
+      <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
+        <h3 className="text-lg font-semibold mb-3">Delivery Address</h3>
 
-        <div className="space-y-3 text-slate-300">
-          <div>
-            <span className="font-semibold text-white">Phone:</span>{" "}
-            <span className="italic text-slate-400">Not added</span>
-          </div>
-
-          <div>
-            <span className="font-semibold text-white">Address:</span>{" "}
-            <span className="italic text-slate-400">No address on file</span>
-          </div>
-        </div>
-
-        <Link
-          to="/profile/edit"
-          className="text-red-400 underline hover:text-red-300 text-sm mt-3 inline-block"
-        >
-          Update contact details
-        </Link>
+        {loadingAddresses ? (
+          <p className="text-slate-400 text-sm">Loading...</p>
+        ) : addresses.length === 0 ? (
+          <p className="text-slate-400 text-sm">No address saved.</p>
+        ) : (
+          <>
+            {addresses.slice(0, 1).map(addr => (
+              <div key={addr.id} className="space-y-1">
+                <p className="font-semibold text-white">{addr.full_name}</p>
+                <p className="text-slate-300">{addr.phone}</p>
+                <p className="text-slate-400">
+                  {addr.street}, {addr.city} - {addr.pincode}
+                </p>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {/* Actions */}
-      <div className="bg-slate-800 p-5 rounded-lg border border-slate-700">
-        <h3 className="text-xl font-semibold mb-4">Actions</h3>
-
-        <div className="flex flex-col gap-3">
-          <Link
-            to="/orders"
-            className="bg-red-600 hover:bg-red-700 text-center py-2 rounded text-white transition"
-          >
-            View My Orders
-          </Link>
-
-          <Link
-            to="/wishlist"
-            className="bg-blue-600 hover:bg-blue-700 text-center py-2 rounded text-white transition"
-          >
-            View Wishlist
-          </Link>
-
-          <Link
-            to="/profile/edit"
-            className="bg-slate-700 hover:bg-slate-600 text-center py-2 rounded text-white transition"
-          >
-            Edit Profile
-          </Link>
-        </div>
+      <div className="flex flex-col gap-3">
+        <Link
+          to="/orders"
+          className="bg-red-600 hover:bg-red-700 text-center py-2 rounded transition"
+        >
+          My Orders
+        </Link>
+        <Link
+          to="/wishlist"
+          className="bg-blue-600 hover:bg-blue-700 text-center py-2 rounded transition"
+        >
+          Wishlist
+        </Link>
       </div>
     </div>
   );

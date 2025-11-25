@@ -7,7 +7,7 @@ import { useCart } from "../context/CartContext";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { clearCart } = useCart();
+  const { reloadCart } = useCart(); // Use reloadCart instead of clearCart
 
   const [statusMessage, setStatusMessage] = useState("Verifying payment...");
   const [loading, setLoading] = useState(true);
@@ -26,34 +26,40 @@ const PaymentSuccess = () => {
     }
 
     const verifyPayment = async () => {
+      // Reload cart from backend (backend already cleared it after order creation)
+      console.log("Reloading cart from backend...");
+      try {
+        await reloadCart();
+        console.log("Cart reloaded successfully");
+      } catch (err) {
+        console.error("Error reloading cart:", err);
+      }
+
+      // Then verify payment status for display purposes
       try {
         const res = await api.get(`/orders/verify-payment/?session_id=${sessionId}`);
         const { payment_verified, status } = res.data;
 
-        // COD handling
-        if (status === "processing") {
-          setStatusMessage("Order placed successfully (Cash On Delivery)");
-          clearCart();
-          return;
-        }
+        console.log("Payment verification result:", { payment_verified, status });
 
-        // Stripe success
-        if (payment_verified) {
+        // Display appropriate message based on payment status
+        if (status === "processing" || status === "paid") {
           setStatusMessage("Payment successful! Your order is confirmed.");
-          clearCart();
+        } else if (payment_verified) {
+          setStatusMessage("Payment successful! Your order is confirmed.");
         } else {
-          setStatusMessage("Payment pending or failed. Please contact support.");
+          setStatusMessage("Order created. Payment is being processed...");
         }
       } catch (err) {
         console.error("Verification Error:", err);
-        setStatusMessage("Error verifying payment. Check your orders.");
+        setStatusMessage("Order created successfully. Check your orders for details.");
       } finally {
         setLoading(false);
       }
     };
 
     verifyPayment();
-  }, [sessionId, navigate, clearCart]);
+  }, [sessionId, navigate, reloadCart]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white py-20 px-4 flex items-center justify-center">

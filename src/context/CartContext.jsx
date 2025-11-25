@@ -89,16 +89,6 @@ export const CartProvider = ({ children }) => {
     } catch {}
   };
 
-  const clearCart = async () => {
-    try {
-      const items = [...cart];
-      for (const it of items) {
-        await api.delete(`/cart/remove/${it.id}/`);
-      }
-      setCart([]);
-    } catch {}
-  };
-
   /* ------------------------ WISHLIST ACTIONS ------------------------ */
   const addToWishlist = async (product) => {
     if (!user) return;
@@ -147,7 +137,6 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
-        clearCart,
 
         wishlist,
         wishlistCount,

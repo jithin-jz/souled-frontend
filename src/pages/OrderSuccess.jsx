@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { useCart } from "../context/CartContext";
 
 const OrderSuccess = () => {
-  const { clearCart } = useCart();
+  const { reloadCart } = useCart();
 
-  // Clear cart when this page loads (COD order success)
+  // Reload cart when this page loads (backend already cleared it)
   useEffect(() => {
-    clearCart();
-  }, [clearCart]);
+    reloadCart();
+  }, [reloadCart]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4">
