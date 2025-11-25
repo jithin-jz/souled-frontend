@@ -1,170 +1,195 @@
-# 🛒 Souled Store
+# Souled Store - Modern eCommerce Platform
 
-**Souled Store** is a modern, fully functional eCommerce web application built using **React**, **Tailwind CSS**, and **JSON Server**. Themed around **Marvel** and **Anime**, it offers a fast, responsive, and user-friendly experience with core features like authentication, cart, wishlist, payments, and order history.
+A full-stack eCommerce platform built with React, Vite, and Django REST Framework (DRF), featuring a modern UI with smooth animations and responsive design.
 
----
+![Souled Store](https://img.shields.io/badge/Status-Development-yellow)
+![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)
+![Django](https://img.shields.io/badge/Django-4.2-092E20?logo=django)
+![DRF](https://img.shields.io/badge/DRF-3.14-9E1F63?logo=django)
 
-## 🚀 Live Demo
+## 🚀 Features
 
-👉 https://souleds.vercel.app
+- **Modern UI/UX** with smooth animations using Framer Motion
+- **Responsive Design** that works on all devices
+- **User Authentication** with JWT (JSON Web Tokens)
+- **Product Catalog** with categories and search functionality
+- **Shopping Cart** with persistent storage
+- **Checkout Process** with order management
+- **Admin Dashboard** for product and order management
+- **Google OAuth** integration
+- **Real-time Updates** for cart and order status
 
----
+## 🛠 Tech Stack
 
-## 🔥 Features
+### Frontend
+- ⚛️ React 18
+- 🚀 Vite (Build tool)
+- 🎨 Tailwind CSS for styling
+- 🔄 React Router for navigation
+- 📱 Responsive design with mobile-first approach
+- 🎭 Framer Motion for animations
+- 🔐 JWT Authentication
+- 📊 Recharts for data visualization
 
-- 🎬 Hero section with background video and animated offer slider  
-- 🛍️ Product listing with category filters and search  
-- 🛒 Add to Cart with quantity validation and toast notifications  
-- ❤️ Wishlist with badge count and localStorage persistence  
-- 🔐 User Authentication (Register & Login)  
-- 💳 Payment page with UPI and Cash on Delivery options  
-- 📦 Order history saved per user (via localStorage)  
-- 📱 Fully responsive and mobile-optimized UI  
-- ⚛️ Context API for global state (Auth, Cart, Wishlist)  
-- 🛠️ Admin Dashboard to manage users, products, and orders  
+### Backend
+- 🐍 Python 3.10+
+- 🎯 Django 4.2
+- 🔄 Django REST Framework (DRF) 3.14
+- 🗄️ PostgreSQL (Database)
+- 🔑 JWT Authentication
+- 🔄 CORS Headers
+- 📦 Django REST Framework Simple JWT
 
----
-
-## 🧱 Tech Stack
-
-| Frontend     | Backend      | Styling       | State Management |
-|--------------|--------------|---------------|------------------|
-| React + Vite | JSON Server  | Tailwind CSS  | Context API      |
-
-## 📁 Project Structure
-
-```
-Souled-Store/
-├── public/
-├── src/
-│   ├── admin/
-│   │   ├── Dashboard.jsx
-│   │   ├── Users.jsx
-│   │   ├── AdminUserDetails.jsx
-│   │   ├── Products.jsx
-│   │   ├── AddProduct.jsx
-│   │   ├── EditProduct.jsx
-│   │   ├── AdminOrderManagement.jsx
-│   │   └── Reports.jsx
-│   ├── assets/
-│   ├── components/
-│   │   ├── layout/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   └── Loader.jsx
-│   │   └── auth/
-│   │       ├── Login.jsx
-│   │       └── Register.jsx
-│   ├── context/
-│   │   ├── AuthContext.jsx
-│   │   ├── CartContext.jsx
-│   │   └── WishlistContext.jsx
-│   ├── hooks/
-│   │   ├── useAuth.js
-│   │   ├── useCart.js
-│   │   └── useWishlist.js
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Products.jsx
-│   │   ├── SingleProduct.jsx
-│   │   ├── Cart.jsx
-│   │   ├── Wishlist.jsx
-│   │   ├── Orders.jsx
-│   │   ├── Payment.jsx
-│   │   ├── PaymentSuccess.jsx
-│   │   └── ProfileDetails.jsx
-│   ├── Routes/
-│   │   ├── ProtectedRoute.jsx
-│   │   ├── AdminRoute.jsx
-│   │   └── PublicRoute.jsx
-│   ├── constants/
-│   │   └── routes.js
-│   ├── utils/
-│   │   └── api.jsx
-│   ├── App.jsx
-│   └── main.jsx
-├── db.json
-├── package.json
-├── tailwind.config.js
-├── postcss.config.js
-├── vite.config.js
-└── README.md
-```
-
-## 🚀 Getting Started
+## 📦 Installation
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js 18+ (LTS recommended)
+- Python 3.10+
+- PostgreSQL 13+
 - npm or yarn
 
-### Installation
+### Frontend Setup
 
-1. **Clone the repository**
+1. Clone the repository:
    ```bash
-   git clone https://github.com/jithin-jz/souled.git
-   cd souled
+   git clone https://github.com/yourusername/souled-store.git
+   cd souled-store
    ```
 
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    npm install
+   # or
+   yarn
    ```
 
-3. **Start JSON Server**
-   ```bash
-   npx json-server --watch db.json --port 3001
+3. Create a `.env` file in the root directory and add your environment variables:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8000/api
+   VITE_GOOGLE_CLIENT_ID=your-google-client-id
    ```
 
-4. **Run the development server**
+4. Start the development server:
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
-5. **Open your browser**
-   
-   Navigate to `http://localhost:5173` to view the application.
+### Backend Setup
 
-## 🛠️ Available Scripts
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Starts the development server |
-| `npm run build` | Builds the app for production |
-| `npm run preview` | Preview the production build |
-| `npm run lint` | Run ESLint |
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   ```
 
-## 🌟 Key Features Breakdown
+3. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Context API Implementation
-- **AuthContext**: Manages user authentication state
-- **CartContext**: Handles cart operations and state
-- **WishlistContext**: Manages wishlist functionality
+4. Set up environment variables in `.env`:
+   ```env
+   DEBUG=True
+   SECRET_KEY=your-secret-key
+   DATABASE_URL=postgresql://user:password@localhost:5432/souled_store
+   CORS_ALLOWED_ORIGINS=http://localhost:5173
+   ```
 
-### Route Protection
-- **ProtectedRoute**: Restricts access to authenticated users
-- **AdminRoute**: Admin-only access control
-- **PublicRoute**: Public access routes
+5. Run migrations:
+   ```bash
+   python manage.py migrate
+   ```
 
-### Admin Dashboard
-- User management and analytics
-- Product inventory management
-- Order processing and tracking
-- Sales reports and insights
+6. Create a superuser:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
+
+## 🏗 Project Structure
+
+```
+souled-store/
+├── src/                    # Frontend source code
+│   ├── assets/            # Static assets (images, fonts, etc.)
+│   ├── components/        # Reusable UI components
+│   ├── context/           # React context providers
+│   ├── pages/             # Page components
+│   ├── routes/            # Application routes
+│   └── utils/             # Utility functions
+├── backend/               # Django backend
+│   ├── config/            # Django project settings
+│   ├── products/          # Products app
+│   ├── users/             # Users app
+│   ├── orders/            # Orders app
+│   └── manage.py
+├── public/                # Public assets
+└── package.json           # Frontend dependencies
+```
+
+## 🧪 Running Tests
+
+### Frontend Tests
+```bash
+npm test
+# or
+yarn test
+```
+
+### Backend Tests
+```bash
+cd backend
+python manage.py test
+```
+
+## 🚀 Deployment
+
+### Frontend
+Build the production version:
+```bash
+npm run build
+# or
+yarn build
+```
+
+### Backend
+For production deployment, consider using:
+- Gunicorn or uWSGI as the application server
+- Nginx as a reverse proxy
+- PostgreSQL as the production database
+- Environment variables for sensitive configuration
+
+## 🤝 Contributing
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- Marvel and Anime communities for inspiration
-- React team for the amazing framework
-- Tailwind CSS for the utility-first CSS framework
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
 
-## 📬 Contact
+---
 
-**Jithin** - *Full Stack Developer*
-
-- GitHub: [@jithin-jz](https://github.com/jithin-jz)
-- Email: jihinjzx@gmail.com
+Made with ❤️ by JITHIN
