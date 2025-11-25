@@ -10,6 +10,8 @@ const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
   timeout: 15000,
+  xsrfCookieName: 'csrftoken',  // Django CSRF cookie name
+  xsrfHeaderName: 'X-CSRFToken', // Django CSRF header name
 });
 
 const refreshApi = axios.create({

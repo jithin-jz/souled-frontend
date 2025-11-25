@@ -48,7 +48,14 @@ const Cart = () => {
             </div>
             <div className="mt-6 text-right">
               <button
-                onClick={clearCart}
+                onClick={async () => {
+                  const success = await clearCart();
+                  if (success) {
+                    toast.success("Cart cleared successfully!");
+                  } else {
+                    toast.error("Failed to clear cart");
+                  }
+                }}
                 className="text-red-500 hover:text-red-700 font-medium text-sm"
               >
                 Clear Cart

@@ -14,7 +14,6 @@ const Payment = () => {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [useNewAddress, setUseNewAddress] = useState(true);
   const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [saveAddress, setSaveAddress] = useState(false);
 
   const [address, setAddress] = useState({
     full_name: "",
@@ -99,15 +98,7 @@ const Payment = () => {
       if (useNewAddress) {
         validateAddress();
         payload.address = address;
-        
-        // Optionally save the address if checkbox is checked
-        if (saveAddress) {
-          try {
-            await api.post("/orders/addresses/", address);
-          } catch {
-            // Ignore save error, still create order
-          }
-        }
+        // Note: Backend will automatically save this address when creating the order
       } else {
         if (!selectedAddressId) {
           throw new Error("Please select an address");
@@ -208,17 +199,6 @@ const Payment = () => {
                 <Input name="city" label="City" value={address.city} onChange={handleChange} />
                 <Input name="pincode" label="Pincode" value={address.pincode} onChange={handleChange} />
               </div>
-
-              {/* Save Address Checkbox */}
-              <label className="flex items-center gap-2 cursor-pointer text-sm">
-                <input
-                  type="checkbox"
-                  checked={saveAddress}
-                  onChange={(e) => setSaveAddress(e.target.checked)}
-                  className="h-4 w-4 text-green-500"
-                />
-                <span>Save this address for future orders</span>
-              </label>
             </>
           )}
 

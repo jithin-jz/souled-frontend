@@ -7,7 +7,7 @@ const OrderSuccess = () => {
   // Reload cart when this page loads (backend already cleared it)
   useEffect(() => {
     reloadCart();
-  }, [reloadCart]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4">

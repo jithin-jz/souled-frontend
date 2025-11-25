@@ -1,5 +1,5 @@
 // src/context/CartContext.jsx
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import api from "../utils/api";
 import { useAuth } from "./AuthContext";
 
@@ -16,6 +16,26 @@ export const CartProvider = ({ children }) => {
 
   // Prevent multiple initial loads
   const hasLoaded = useRef(false);
+
+  /* ------------------------ LOADERS ------------------------ */
+  const loadCart = useCallback(async () => {
+    try {
+      const res = await api.get("/cart/");
+      setCart(res.data.items || []);
+    } catch {}
+  }, []);
+
+  const loadWishlist = useCallback(async () => {
+    try {
+      const res = await api.get("/cart/wishlist/");
+      const items = res.data.items || [];
+      setWishlistItems(items);
+      setWishlist(items.map((it) => it.product));
+    } catch {
+      setWishlistItems([]);
+      setWishlist([]);
+    }
+  }, []);
 
   /* ------------------------ INITIAL LOAD ------------------------ */
   useEffect(() => {
@@ -38,27 +58,7 @@ export const CartProvider = ({ children }) => {
         setLoading(false);
       });
     }
-  }, [user]);
-
-  /* ------------------------ LOADERS ------------------------ */
-  const loadCart = async () => {
-    try {
-      const res = await api.get("/cart/");
-      setCart(res.data.items || []);
-    } catch {}
-  };
-
-  const loadWishlist = async () => {
-    try {
-      const res = await api.get("/cart/wishlist/");
-      const items = res.data.items || [];
-      setWishlistItems(items);
-      setWishlist(items.map((it) => it.product));
-    } catch {
-      setWishlistItems([]);
-      setWishlist([]);
-    }
-  };
+  }, [user, loadCart, loadWishlist]); // loadCart and loadWishlist are stable due to useCallback
 
   /* ------------------------ CART ACTIONS ------------------------ */
   const addToCart = async (product, quantity = 1) => {
@@ -87,6 +87,18 @@ export const CartProvider = ({ children }) => {
       await api.patch(`/cart/update/${itemId}/`, { quantity: qty });
       await loadCart();
     } catch {}
+  };
+
+  const clearCart = async () => {
+    if (!user) return;
+
+    try {
+      await api.delete("/cart/clear/");
+      await loadCart();
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   /* ------------------------ WISHLIST ACTIONS ------------------------ */
@@ -137,6 +149,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart,
 
         wishlist,
         wishlistCount,
