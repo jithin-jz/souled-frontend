@@ -4,53 +4,45 @@ import { toast } from 'react-toastify';
 import AdminNavbar from './AdminNavbar';
 
 const AdminOrderManagement = () => {
-  const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = async () => {
     try {
-      const res = await api.get('/users');
-      setUsers(res.data);
+      const res = await api.get('/orders/admin/all/');
+      setOrders(res.data || []);
     } catch (error) {
-      toast.error('Failed to fetch users');
+      toast.error('Failed to fetch orders');
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStatusChange = async (userId, orderId, newStatus) => {
+  const handleStatusChange = async (orderId, statusType, newValue) => {
     try {
-      const user = users.find(u => u.id === userId);
-      if (!user) return;
-
-      const updatedOrders = user.orders.map(order =>
-        order.id === orderId ? { ...order, status: newStatus } : order
+      const updateData = {};
+      updateData[statusType] = newValue;
+      
+      await api.patch(`/orders/${orderId}/status/`, updateData);
+      
+      // Update local state
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId ? { ...order, [statusType]: newValue } : order
+        )
       );
 
-      await api.patch(`/users/${userId}`, { orders: updatedOrders });
-
-      setUsers(prev =>
-        prev.map(u => u.id === userId ? { ...u, orders: updatedOrders } : u)
-      );
-
-      toast.success('Order status updated');
-    } catch {
-      toast.error('Failed to update order status');
+      toast.success(`${statusType === 'payment_status' ? 'Payment' : 'Order'} status updated successfully`);
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to update status');
+      console.error(error);
     }
   };
 
   useEffect(() => {
     fetchOrders();
   }, []);
-
-  const allOrders = users.flatMap(user =>
-    (user.orders || []).map(order => ({
-      ...order,
-      userId: user.id,
-      userName: user.name,
-      userEmail: user.email,
-    }))
-  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-950 text-white">
@@ -63,11 +55,11 @@ const AdminOrderManagement = () => {
 
         {loading ? (
           <div className="text-center text-gray-400 animate-pulse">Loading orders...</div>
-        ) : allOrders.length === 0 ? (
+        ) : orders.length === 0 ? (
           <div className="text-center text-gray-400">No orders found.</div>
         ) : (
           <>
-            {/* ✅ Desktop Table */}
+            {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-800 shadow">
               <table className="min-w-full text-sm bg-gray-900">
                 <thead className="bg-gray-800 sticky top-0 z-10">
@@ -76,46 +68,53 @@ const AdminOrderManagement = () => {
                     <th className="p-4">Customer</th>
                     <th className="p-4">Date</th>
                     <th className="p-4">Total</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4">Update</th>
+                    <th className="p-4">Payment</th>
+                    <th className="p-4">Payment Status</th>
+                    <th className="p-4">Order Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {allOrders.map(order => (
+                  {orders.map(order => (
                     <tr
                       key={order.id}
                       className="border-t border-gray-800 hover:bg-gray-800/60 transition"
                     >
                       <td className="p-4 font-mono text-gray-200">{order.id}</td>
                       <td className="p-4">
-                        <p className="font-semibold text-white">{order.userName}</p>
-                        <p className="text-xs text-gray-400">{order.userEmail}</p>
+                        <p className="font-semibold text-white">{order.user}</p>
                       </td>
                       <td className="p-4 text-gray-300">
-                        {new Date(order.date).toLocaleDateString()}
+                        {new Date(order.created_at).toLocaleDateString()}
                       </td>
                       <td className="p-4 font-semibold text-green-300">
-                        ₹{order.total.toFixed(2)}
+                        ₹{Number(order.total_amount).toFixed(2)}
                       </td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold
-                          ${order.status === 'Processing' ? 'bg-yellow-200 text-yellow-900'
-                            : order.status === 'Shipped' ? 'bg-blue-200 text-blue-900'
-                            : 'bg-green-200 text-green-900'}`}>
-                          {order.status}
-                        </span>
+                      <td className="p-4 text-gray-300 capitalize">
+                        {order.payment_method}
                       </td>
                       <td className="p-4">
                         <select
-                          value={order.status}
+                          value={order.payment_status}
                           onChange={e =>
-                            handleStatusChange(order.userId, order.id, e.target.value)
+                            handleStatusChange(order.id, 'payment_status', e.target.value)
                           }
                           className="bg-gray-800 border border-gray-700 text-white px-2 py-1 text-xs rounded-md w-full"
                         >
-                          <option value="Processing">Processing</option>
-                          <option value="Shipped">Shipped</option>
-                          <option value="Delivered">Delivered</option>
+                          <option value="unpaid">Unpaid</option>
+                          <option value="paid">Paid</option>
+                        </select>
+                      </td>
+                      <td className="p-4">
+                        <select
+                          value={order.order_status}
+                          onChange={e =>
+                            handleStatusChange(order.id, 'order_status', e.target.value)
+                          }
+                          className="bg-gray-800 border border-gray-700 text-white px-2 py-1 text-xs rounded-md w-full"
+                        >
+                          <option value="processing">Processing</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
                         </select>
                       </td>
                     </tr>
@@ -124,9 +123,9 @@ const AdminOrderManagement = () => {
               </table>
             </div>
 
-            {/* ✅ Mobile Card View */}
+            {/* Mobile Card View */}
             <div className="md:hidden space-y-6">
-              {allOrders.map(order => (
+              {orders.map(order => (
                 <div
                   key={order.id}
                   className="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-2 shadow-md"
@@ -136,35 +135,46 @@ const AdminOrderManagement = () => {
                     <span className="font-mono text-sm text-gray-200">{order.id}</span>
                   </div>
                   <div>
-                    <p className="font-semibold">{order.userName}</p>
-                    <p className="text-xs text-gray-400">{order.userEmail}</p>
+                    <p className="font-semibold">{order.user}</p>
                   </div>
                   <p className="text-sm text-gray-300">
-                    <strong>Date:</strong> {new Date(order.date).toLocaleDateString()}
+                    <strong>Date:</strong> {new Date(order.created_at).toLocaleDateString()}
                   </p>
                   <p className="text-sm text-green-400 font-bold">
-                    ₹{order.total.toFixed(2)}
+                    ₹{Number(order.total_amount).toFixed(2)}
                   </p>
-                  <p className="text-sm">
-                    <strong>Status:</strong>{' '}
-                    <span className={`font-semibold px-2 py-1 rounded-full text-xs
-                      ${order.status === 'Processing' ? 'bg-yellow-200 text-yellow-900'
-                        : order.status === 'Shipped' ? 'bg-blue-200 text-blue-900'
-                        : 'bg-green-200 text-green-900'}`}>
-                      {order.status}
-                    </span>
+                  <p className="text-sm text-gray-300 capitalize">
+                    <strong>Payment:</strong> {order.payment_method}
                   </p>
-                  <select
-                    value={order.status}
-                    onChange={e =>
-                      handleStatusChange(order.userId, order.id, e.target.value)
-                    }
-                    className="w-full mt-2 text-xs bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded"
-                  >
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
+                  
+                  <div>
+                    <p className="text-sm font-semibold mb-1">Payment Status:</p>
+                    <select
+                      value={order.payment_status}
+                      onChange={e =>
+                        handleStatusChange(order.id, 'payment_status', e.target.value)
+                      }
+                      className="w-full text-xs bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded"
+                    >
+                      <option value="unpaid">Unpaid</option>
+                      <option value="paid">Paid</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-semibold mb-1">Order Status:</p>
+                    <select
+                      value={order.order_status}
+                      onChange={e =>
+                        handleStatusChange(order.id, 'order_status', e.target.value)
+                      }
+                      className="w-full text-xs bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded"
+                    >
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                    </select>
+                  </div>
                 </div>
               ))}
             </div>

@@ -13,7 +13,6 @@ const Orders = () => {
 
     const fetchOrders = async () => {
       try {
-        // Fetches data from the /api/orders/my/ route exposed by the backend ListAPIView
         const res = await api.get("/orders/my/");
         setOrders(res.data || []);
       } catch (err) {
@@ -58,39 +57,45 @@ const Orders = () => {
               <div>
                 <h3 className="text-xl font-bold">Order #{order.id}</h3>
                 <p className="text-sm text-gray-400">
-                  {/* IMPROVEMENT: Cleaner date formatting */}
                   Placed on: {new Date(order.created_at).toLocaleDateString()}{" "}
                   at {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
 
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${
-                  order.status === "pending"
-                    ? "bg-yellow-500/10 text-yellow-300 border border-yellow-400"
-                    : order.status === "paid"
-                    ? "bg-green-500/10 text-green-300 border border-green-400"
-                    : order.status === "processing"
-                    ? "bg-blue-500/10 text-blue-300 border border-blue-400"
-                    : "bg-slate-500/10 text-slate-300 border border-slate-400"
-                }`}
-              >
-                {order.status.toUpperCase()}
-              </span>
+              <div className="flex gap-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${
+                    order.payment_status === "paid"
+                      ? "bg-green-500/10 text-green-300 border border-green-400"
+                      : "bg-yellow-500/10 text-yellow-300 border border-yellow-400"
+                  }`}
+                >
+                  {order.payment_status?.toUpperCase()}
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${
+                    order.order_status === "processing"
+                      ? "bg-blue-500/10 text-blue-300 border border-blue-400"
+                      : order.order_status === "shipped"
+                      ? "bg-purple-500/10 text-purple-300 border border-purple-400"
+                      : "bg-emerald-500/10 text-emerald-300 border border-emerald-400"
+                  }`}
+                >
+                  {order.order_status?.toUpperCase()}
+                </span>
+              </div>
             </div>
 
             {/* Address */}
             <div className="mb-4">
               <h4 className="text-md font-semibold">Shipping Address</h4>
-              {/* IMPROVEMENT: Defensive check for order.address */}
               <div className="text-gray-300 text-sm mt-1 leading-relaxed">
                 {order.address ? (
                   <>
                     <p>{order.address.full_name}</p>
                     <p>{order.address.phone}</p>
                     <p>
-                      {order.address.street}, {order.address.city} -{" "}
-                      {order.address.pincode}
+                      {order.address.street}, {order.address.city} - {order.address.pincode}
                     </p>
                   </>
                 ) : (
@@ -99,9 +104,52 @@ const Orders = () => {
               </div>
             </div>
 
-            {/* Payment */}
+            {/* Payment Status */}
             <div className="mb-4">
-              <h4 className="text-md font-semibold">Payment</h4>
+              <h4 className="text-md font-semibold">Payment Status</h4>
+              <div className="mt-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${
+                    order.payment_status === "paid"
+                      ? "bg-green-500/10 text-green-300 border border-green-400"
+                      : "bg-yellow-500/10 text-yellow-300 border border-yellow-400"
+                  }`}
+                >
+                  {order.payment_status?.toUpperCase()}
+                </span>
+                <p className="text-sm text-gray-400 mt-2">
+                  {order.payment_status === "paid" && "Payment has been received"}
+                  {order.payment_status === "unpaid" && "Waiting for payment"}
+                </p>
+              </div>
+            </div>
+
+            {/* Order Status */}
+            <div className="mb-4">
+              <h4 className="text-md font-semibold">Order Status</h4>
+              <div className="mt-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide ${
+                    order.order_status === "processing"
+                      ? "bg-blue-500/10 text-blue-300 border border-blue-400"
+                      : order.order_status === "shipped"
+                      ? "bg-purple-500/10 text-purple-300 border border-purple-400"
+                      : "bg-emerald-500/10 text-emerald-300 border border-emerald-400"
+                  }`}
+                >
+                  {order.order_status?.toUpperCase()}
+                </span>
+                <p className="text-sm text-gray-400 mt-2">
+                  {order.order_status === "processing" && "Your order is being prepared"}
+                  {order.order_status === "shipped" && "Your order has been dispatched and is on the way"}
+                  {order.order_status === "delivered" && "Your order has been successfully delivered"}
+                </p>
+              </div>
+            </div>
+
+            {/* Payment Method */}
+            <div className="mb-4">
+              <h4 className="text-md font-semibold">Payment Method</h4>
               <p className="text-gray-300 text-sm capitalize">
                 {order.payment_method}
               </p>
@@ -112,7 +160,6 @@ const Orders = () => {
               <h4 className="font-semibold mb-3">Items</h4>
 
               <div className="divide-y divide-slate-700">
-                {/* IMPROVEMENT: Defensive check for order.items */}
                 {order.items?.length > 0 ? (
                   order.items.map((item) => (
                     <div key={item.id} className="flex justify-between py-3">
@@ -145,7 +192,6 @@ const Orders = () => {
               <p className="text-gray-300 text-sm">
                 Subtotal:{" "}
                 <span className="text-white font-semibold">
-                  {/* Ensure total_amount is a number before calling toFixed */}
                   ₹{Number(order.total_amount).toFixed(2)}
                 </span>
               </p>
