@@ -19,7 +19,7 @@ const Wishlist = () => {
       {wishlist.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-60 text-center">
           <p className="text-gray-400 text-xl mb-4">
-            💔 Your wishlist is empty.
+           Your wishlist is empty.
           </p>
           <Link
             to="/products"
