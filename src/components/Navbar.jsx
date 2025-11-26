@@ -129,7 +129,7 @@ const Navbar = () => {
 
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-44 bg-slate-800 text-white rounded-md shadow-lg py-1 border border-slate-700">
-                    <div className="px-4 py-2 text-sm text-gray-300 border-b border-slate-700">
+                    <div className="px-4 py-2 text-sm text-slate-300 border-b border-slate-700">
                       Hi, {user.first_name || "User"}
                     </div>
 
@@ -248,3 +248,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

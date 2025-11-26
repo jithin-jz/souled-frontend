@@ -29,7 +29,7 @@ const AdminNavbar = () => {
   };
 
   return (
-    <header className="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gray-700 backdrop-blur-md bg-opacity-90">
+    <header className="bg-slate-900 shadow-lg sticky top-0 z-50 border-b border-slate-700 backdrop-blur-md bg-opacity-90">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
 
         {/* Logo */}
@@ -40,7 +40,7 @@ const AdminNavbar = () => {
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="sm:hidden text-gray-300 focus:outline-none text-xl"
+          className="sm:hidden text-slate-300 focus:outline-none text-xl"
         >
           {menuOpen ? <FiX /> : <FiMenu />}
         </button>
@@ -54,7 +54,7 @@ const AdminNavbar = () => {
               className={`text-sm font-semibold uppercase tracking-wide px-3 py-1.5 rounded-md transition-all duration-300 ${
                 location.pathname === item.path
                   ? "bg-yellow-400 text-black shadow-md"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  : "text-slate-300 hover:bg-slate-700 hover:text-white"
               }`}
             >
               {item.label}
@@ -65,7 +65,7 @@ const AdminNavbar = () => {
         {/* Desktop Logout */}
         <button
           onClick={handleLogout}
-          className="hidden sm:flex items-center gap-2 text-sm text-gray-300 border border-gray-600 px-4 py-1.5 rounded-md hover:bg-red-600 hover:text-white transition-all duration-300 hover:shadow-md group"
+          className="hidden sm:flex items-center gap-2 text-sm text-slate-300 border border-slate-600 px-4 py-1.5 rounded-md hover:bg-red-600 hover:text-white transition-all duration-300 hover:shadow-md group"
         >
           <FiLogOut size={18} className="group-hover:translate-x-1 transition-transform" />
           <span>Logout</span>
@@ -83,7 +83,7 @@ const AdminNavbar = () => {
               className={`block w-full px-4 py-2 rounded-md text-sm font-semibold uppercase tracking-wide transition-all duration-300 ${
                 location.pathname === item.path
                   ? "bg-yellow-400 text-black shadow"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  : "text-slate-300 hover:bg-slate-700 hover:text-white"
               }`}
             >
               {item.label}
@@ -92,7 +92,7 @@ const AdminNavbar = () => {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 text-sm text-gray-300 border border-gray-600 px-4 py-2 rounded-md hover:bg-red-600 hover:text-white transition-all duration-300 group"
+            className="w-full flex items-center gap-2 text-sm text-slate-300 border border-slate-600 px-4 py-2 rounded-md hover:bg-red-600 hover:text-white transition-all duration-300 group"
           >
             <FiLogOut size={18} className="group-hover:translate-x-1 transition-transform" />
             <span>Logout</span>
@@ -104,3 +104,4 @@ const AdminNavbar = () => {
 };
 
 export default AdminNavbar;
+

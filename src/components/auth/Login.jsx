@@ -27,8 +27,27 @@ const Login = () => {
       await login(email, password);
       toast.success("Logged in successfully!");
     } catch (err) {
+      console.log("Login error:", err.response?.data);
+      
       let msg = "Invalid email or password.";
-      if (err?.response?.data?.detail) msg = err.response.data.detail;
+      
+      // Handle different error response formats
+      if (err?.response?.data) {
+        const data = err.response.data;
+        // Direct detail field
+        if (data.detail) {
+          msg = data.detail;
+        }
+        // Non-field errors array
+        else if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+          msg = data.non_field_errors[0];
+        }
+        // Email or password specific errors
+        else if (data.email || data.password) {
+          msg = data.email?.[0] || data.password?.[0] || msg;
+        }
+      }
+      
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -40,8 +59,17 @@ const Login = () => {
     try {
       await googleLogin(res.credential);
       toast.success("Google login successful!");
-    } catch {
-      toast.error("Google login failed. Try again.");
+    } catch (err) {
+      console.log("Google login error:", err.response?.data);
+      
+      let msg = "Google login failed. Try again.";
+      
+      // Extract specific error message if available
+      if (err?.response?.data?.detail) {
+        msg = err.response.data.detail;
+      }
+      
+      toast.error(msg);
     } finally {
       setGoogleLoading(false);
     }
@@ -88,7 +116,7 @@ const Login = () => {
         <div className="mt-6 flex flex-col items-center space-y-3">
           <div className="text-gray-500">OR</div>
           {googleLoading ? (
-            <p className="text-gray-300 text-sm">Connecting to Google...</p>
+            <p className="text-slate-300 text-sm">Connecting to Google...</p>
           ) : (
             <GoogleLogin
               onSuccess={onGoogleSuccess}
@@ -98,8 +126,8 @@ const Login = () => {
           )}
         </div>
 
-        <p className="text-gray-400 text-center mt-6">
-          Don’t have an account?{" "}
+        <p className="text-slate-400 text-center mt-6">
+          Don't have an account?{" "}
           <Link
             to="/register"
             className="text-red-400 hover:text-red-300 font-medium"
@@ -113,3 +141,4 @@ const Login = () => {
 };
 
 export default Login;
+

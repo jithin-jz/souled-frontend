@@ -10,8 +10,8 @@ const OrderSuccess = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-gray-800 rounded-2xl p-10 text-center shadow-xl space-y-6">
+    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-slate-800 rounded-2xl p-10 text-center shadow-xl space-y-6">
 
         {/* Animated success icon */}
         <div className="flex justify-center">
@@ -36,7 +36,7 @@ const OrderSuccess = () => {
           Order Placed Successfully!
         </h1>
 
-        <p className="text-gray-300 text-sm leading-relaxed">
+        <p className="text-slate-300 text-sm leading-relaxed">
           Your Cash On Delivery order has been placed successfully.  
           You will receive updates once your order is processed.
         </p>
@@ -52,7 +52,7 @@ const OrderSuccess = () => {
 
         <a
           href="/"
-          className="text-gray-400 text-sm hover:text-gray-200 transition"
+          className="text-slate-400 text-sm hover:text-gray-200 transition"
         >
           Continue Shopping →
         </a>
@@ -75,3 +75,4 @@ const OrderSuccess = () => {
 };
 
 export default OrderSuccess;
+

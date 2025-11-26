@@ -12,15 +12,35 @@ const Cart = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-[70vh] bg-slate-900 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🛒</div>
-          <p className="text-gray-400 text-lg mb-6">
-            Your cart is empty. Add items to continue.
+      <div className="min-h-[calc(100vh-80px)] bg-slate-900 flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          {/* Large Cart Icon */}
+          <div className="mb-6 flex justify-center">
+            <div className="bg-slate-800 border-2 border-slate-700 rounded-full p-8">
+              <svg 
+                className="w-20 h-20 text-slate-400" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1.5} 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-white mb-3">Your cart is empty</h2>
+          <p className="text-slate-400 mb-8 leading-relaxed">
+            You haven't added any items yet. Browse products and add items to see them here.
           </p>
+          
           <Link
             to="/products"
-            className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-full shadow transition"
+            className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-colors"
           >
             Browse Products
           </Link>
@@ -70,14 +90,14 @@ const Cart = () => {
             </h3>
 
             <div className="space-y-4 text-sm">
-              <div className="flex justify-between text-gray-300">
+              <div className="flex justify-between text-slate-300">
                 <span>Subtotal</span>
                 <span className="font-semibold text-white">
                   ₹{cartTotal.toFixed(2)}
                 </span>
               </div>
 
-              <div className="flex justify-between text-gray-300">
+              <div className="flex justify-between text-slate-300">
                 <span>Shipping</span>
                 <span className="text-green-400 font-medium">Free</span>
               </div>
@@ -151,14 +171,14 @@ const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
         <div className="flex items-center border border-slate-600 rounded-lg overflow-hidden">
           <button
             onClick={handleDecrease}
-            className="px-3 py-1 text-gray-300 hover:bg-slate-700"
+            className="px-3 py-1 text-slate-300 hover:bg-slate-700"
           >
             −
           </button>
           <span className="px-4 text-white">{quantity}</span>
           <button
             onClick={handleIncrease}
-            className="px-3 py-1 text-gray-300 hover:bg-slate-700"
+            className="px-3 py-1 text-slate-300 hover:bg-slate-700"
           >
             +
           </button>

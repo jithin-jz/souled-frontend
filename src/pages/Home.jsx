@@ -29,17 +29,17 @@ const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
     <div className="group relative w-full">
       <button
         onClick={toggle}
-        className="absolute top-1.5 right-1.5 z-10 p-1.5 rounded-full bg-black/60 backdrop-blur-sm"
+        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-slate-900/80 backdrop-blur-sm border border-slate-700 hover:bg-slate-800 transition-colors"
       >
         {isWishlisted ? (
           <FaHeart className="text-red-500 text-lg" />
         ) : (
-          <FiHeart className="text-gray-300 text-lg group-hover:text-red-500" />
+          <FiHeart className="text-slate-300 text-lg group-hover:text-red-500 transition-colors" />
         )}
       </button>
 
       <Link to={`/products/${product.id}`} className="block">
-        <div className="overflow-hidden rounded-lg bg-gray-800">
+        <div className="overflow-hidden rounded-xl bg-slate-800 border border-slate-700">
           <img
             src={product.image}
             alt={product.name}
@@ -47,11 +47,11 @@ const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
           />
         </div>
 
-        <div className="mt-2">
+        <div className="mt-3">
           <h3 className="text-white text-sm sm:text-base font-medium truncate">
             {product.name}
           </h3>
-          <p className="text-gray-300 font-bold text-sm sm:text-base">
+          <p className="text-slate-300 font-bold text-sm sm:text-base mt-1">
             ₹{product.price}
           </p>
         </div>
@@ -123,14 +123,14 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] bg-gray-900">
+      <div className="flex justify-center items-center min-h-[60vh] bg-slate-900">
         <Loader />
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 pb-4 bg-gray-900 text-white">
+    <div className="space-y-12 pb-4 bg-slate-900 text-white">
 
       {/* BANNER */}
       <div className="w-full relative">
@@ -174,7 +174,7 @@ const Home = () => {
           ].map((offer, index) => (
             <div
               key={index}
-              className="px-4 py-2 rounded-full text-xs sm:text-sm text-white bg-gray-800 shadow-md"
+              className="px-4 py-2 rounded-full text-xs sm:text-sm text-white bg-slate-800 border border-slate-700 shadow-md"
             >
               {offer}
             </div>
@@ -215,7 +215,7 @@ const Home = () => {
       <div className="px-4 text-center pb-0">
         <Link
           to="/products"
-          className="inline-block rounded-full bg-white text-black px-8 py-3 font-medium hover:bg-gray-200 transition-colors"
+          className="inline-block rounded-xl bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold transition-colors shadow-lg"
         >
           View All Products
         </Link>
@@ -225,3 +225,4 @@ const Home = () => {
 };
 
 export default Home;
+

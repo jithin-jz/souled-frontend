@@ -70,12 +70,12 @@ const Reports = () => {
   }));
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar />
 
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full">
         {loading ? (
-          <div className="text-center text-gray-400 mt-20">Loading reports...</div>
+          <div className="text-center text-slate-400 mt-20">Loading reports...</div>
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -147,7 +147,7 @@ const Reports = () => {
         )}
       </main>
 
-      <footer className="text-center text-sm p-4 bg-gray-950 text-gray-400 border-t border-gray-800">
+      <footer className="text-center text-sm p-4 bg-gray-950 text-slate-400 border-t border-slate-800">
         &copy; {new Date().getFullYear()} <span className="text-white font-semibold">SOULED Admin</span>. All rights reserved.
       </footer>
     </div>
@@ -162,3 +162,4 @@ const StatCard = ({ title, value, color }) => (
 );
 
 export default Reports;
+

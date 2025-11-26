@@ -37,7 +37,7 @@ const AdminProducts = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar />
 
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full">
@@ -51,9 +51,9 @@ const AdminProducts = () => {
           </Link>
         </div>
 
-        <div className="overflow-x-auto bg-gray-800 border border-gray-700 rounded-xl">
+        <div className="overflow-x-auto bg-slate-800 border border-slate-700 rounded-xl">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-gray-700 text-gray-300 text-xs uppercase">
+            <thead className="bg-slate-700 text-slate-300 text-xs uppercase">
               <tr>
                 <th className="p-4">Name</th>
                 <th className="p-4">Price</th>
@@ -65,13 +65,13 @@ const AdminProducts = () => {
             <tbody>
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="p-6 text-center text-gray-400">
+                  <td colSpan="4" className="p-6 text-center text-slate-400">
                     No products found
                   </td>
                 </tr>
               ) : (
                 products.map(product => (
-                  <tr key={product.id} className="border-t border-gray-700">
+                  <tr key={product.id} className="border-t border-slate-700">
                     <td className="p-4">{product.name}</td>
                     <td className="p-4 text-green-300 font-semibold">₹{product.price}</td>
                     <td className="p-4">{product.category}</td>
@@ -98,3 +98,4 @@ const AdminProducts = () => {
 };
 
 export default AdminProducts;
+

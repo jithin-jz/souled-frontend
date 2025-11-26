@@ -23,28 +23,28 @@ const Filters = ({
       {/* Search + Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type="text"
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2.5 border border-gray-700 rounded-lg bg-gray-800 text-white"
+            className="w-full pl-10 pr-3 py-2.5 border border-slate-700 rounded-lg bg-slate-800 text-white"
           />
         </div>
 
         {/* Mobile toggle button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="md:hidden flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-700 rounded-lg bg-gray-800 text-white"
+          className="md:hidden flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-700 rounded-lg bg-slate-800 text-white"
         >
-          <Filter className="w-5 h-5 text-gray-300" />
+          <Filter className="w-5 h-5 text-slate-300" />
           <span>Filters</span>
         </button>
 
         {/* Desktop Filters */}
-        <div className="hidden md:flex flex-wrap items-center gap-2 bg-gray-800 p-2 rounded-lg border border-gray-700">
-          <span className="text-sm font-medium text-gray-300">Price:</span>
+        <div className="hidden md:flex flex-wrap items-center gap-2 bg-slate-800 p-2 rounded-lg border border-slate-700">
+          <span className="text-sm font-medium text-slate-300">Price:</span>
           {priceRanges.map((range) => (
             <button
               key={range.label}
@@ -52,14 +52,14 @@ const Filters = ({
               className={`px-3 py-1 text-sm rounded-full transition ${
                 selectedPriceLabel === range.label
                   ? "bg-red-900 text-white border border-red-700"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600"
+                  : "bg-slate-700 text-slate-300 hover:bg-slate-600 border border-slate-600"
               }`}
             >
               {range.label}
             </button>
           ))}
 
-          <span className="text-sm font-medium text-gray-300 ml-4">
+          <span className="text-sm font-medium text-slate-300 ml-4">
             Category:
           </span>
           {categories.map((category) => (
@@ -69,7 +69,7 @@ const Filters = ({
               className={`px-3 py-1 text-sm rounded-full transition ${
                 selectedCategory === category
                   ? "bg-red-900 text-white border border-red-700"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600"
+                  : "bg-slate-700 text-slate-300 hover:bg-slate-600 border border-slate-600"
               }`}
             >
               {category}
@@ -80,11 +80,11 @@ const Filters = ({
 
       {/* Mobile Filters */}
       {showFilters && (
-        <div className="md:hidden bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6 space-y-4">
+        <div className="md:hidden bg-slate-800 p-4 rounded-lg border border-slate-700 mb-6 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium text-gray-200">Filters</h3>
             <button onClick={() => setShowFilters(false)}>
-              <X className="h-5 w-5 text-gray-400" />
+              <X className="h-5 w-5 text-slate-400" />
             </button>
           </div>
 
@@ -102,9 +102,9 @@ const Filters = ({
                     name="price"
                     checked={selectedPriceLabel === range.label}
                     onChange={() => togglePriceFilter(range)}
-                    className="h-4 w-4 text-red-600 border-gray-600 focus:ring-red-500"
+                    className="h-4 w-4 text-red-600 border-slate-600 focus:ring-red-500"
                   />
-                  <span className="text-sm text-gray-300">{range.label}</span>
+                  <span className="text-sm text-slate-300">{range.label}</span>
                 </label>
               ))}
             </div>
@@ -124,9 +124,9 @@ const Filters = ({
                     name="category"
                     checked={selectedCategory === category}
                     onChange={() => toggleCategoryFilter(category)}
-                    className="h-4 w-4 text-red-600 border-gray-600 focus:ring-red-500"
+                    className="h-4 w-4 text-red-600 border-slate-600 focus:ring-red-500"
                   />
-                  <span className="text-sm text-gray-300">{category}</span>
+                  <span className="text-sm text-slate-300">{category}</span>
                 </label>
               ))}
             </div>
@@ -138,3 +138,4 @@ const Filters = ({
 };
 
 export default Filters;
+

@@ -27,7 +27,7 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-gray-400">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-400">
         <div className="text-center">
           <div className="animate-pulse mb-4">Loading orders...</div>
           <div className="text-sm">If this takes too long, try refreshing.</div>
@@ -47,7 +47,7 @@ export default function Orders() {
           </svg>
 
           <h2 className="text-3xl font-semibold mb-2">No orders yet</h2>
-          <p className="text-gray-400">
+          <p className="text-slate-400">
             You haven't placed any orders. Browse products and complete a purchase to see it here.
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function Orders() {
       <div className="max-w-6xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl font-bold">Your Orders</h1>
-          <p className="text-sm text-gray-400">{orders.length} order{orders.length > 1 ? "s" : ""} placed</p>
+          <p className="text-sm text-slate-400">{orders.length} order{orders.length > 1 ? "s" : ""} placed</p>
         </header>
 
         <section className="grid gap-6 lg:grid-cols-2">
@@ -72,7 +72,7 @@ export default function Orders() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">Order #{order.id}</h3>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     {new Date(order.created_at).toLocaleDateString()} at{" "}
                     {new Date(order.created_at).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -106,7 +106,7 @@ export default function Orders() {
                     </span>
                   </div>
 
-                  <div className="text-right text-sm text-gray-400">
+                  <div className="text-right text-sm text-slate-400">
                     Payment:{" "}
                     <span className="text-gray-200 font-medium capitalize">
                       {order.payment_method}
@@ -119,27 +119,27 @@ export default function Orders() {
               <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <h4 className="text-sm font-semibold text-gray-200">Shipping</h4>
-                  <div className="mt-2 text-sm text-gray-300 leading-tight">
+                  <div className="mt-2 text-sm text-slate-300 leading-tight">
                     {order.address ? (
                       <>
                         <div className="font-medium">{order.address.full_name}</div>
                         <div className="mt-1">
                           {order.address.street}, {order.address.city} - {order.address.pincode}
                         </div>
-                        <div className="mt-1 text-xs text-gray-400">{order.address.phone}</div>
+                        <div className="mt-1 text-xs text-slate-400">{order.address.phone}</div>
                       </>
                     ) : (
-                      <div className="text-gray-400">Address information missing.</div>
+                      <div className="text-slate-400">Address information missing.</div>
                     )}
                   </div>
                 </div>
 
                 <div className="md:col-span-1 text-right">
-                  <div className="text-sm text-gray-400">Subtotal</div>
+                  <div className="text-sm text-slate-400">Subtotal</div>
                   <div className="text-lg font-semibold text-white">
                     ₹{Number(order.total_amount).toFixed(2)}
                   </div>
-                  <div className="text-xs text-gray-400 mt-2">
+                  <div className="text-xs text-slate-400 mt-2">
                     Shipping: <span className="text-green-400">Free</span>
                   </div>
                 </div>
@@ -151,3 +151,4 @@ export default function Orders() {
     </div>
   );
 }
+

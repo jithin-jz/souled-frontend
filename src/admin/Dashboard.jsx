@@ -70,7 +70,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar />
       <main className="flex-grow p-4 sm:p-6">
         {isRootDashboard ? (
@@ -86,7 +86,7 @@ const Dashboard = () => {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Pie Chart */}
-              <div className="bg-gray-800 rounded-xl p-4 shadow-md">
+              <div className="bg-slate-800 rounded-xl p-4 shadow-md">
                 <h2 className="text-lg font-semibold mb-4">Product Categories</h2>
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +112,7 @@ const Dashboard = () => {
               </div>
 
               {/* Bar Chart */}
-              <div className="bg-gray-800 rounded-xl p-4 shadow-md">
+              <div className="bg-slate-800 rounded-xl p-4 shadow-md">
                 <h2 className="text-lg font-semibold mb-4">Top Products by Stock</h2>
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -132,7 +132,7 @@ const Dashboard = () => {
               </div>
 
               {/* Line Chart */}
-              <div className="bg-gray-800 rounded-xl p-4 shadow-md lg:col-span-2">
+              <div className="bg-slate-800 rounded-xl p-4 shadow-md lg:col-span-2">
                 <h2 className="text-lg font-semibold mb-4">Order Revenue Timeline</h2>
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -159,7 +159,7 @@ const Dashboard = () => {
         )}
       </main>
 
-      <footer className="text-center text-sm p-4 bg-gray-900 text-gray-400 border-t border-gray-800">
+      <footer className="text-center text-sm p-4 bg-slate-900 text-slate-400 border-t border-slate-800">
         &copy; {new Date().getFullYear()} SOULED Admin. All rights reserved.
       </footer>
     </div>
@@ -174,3 +174,4 @@ const StatCard = ({ title, value, color }) => (
 );
 
 export default Dashboard;
+

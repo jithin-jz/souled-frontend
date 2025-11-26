@@ -28,12 +28,33 @@ const Register = () => {
 
     try {
       await register(firstName, lastName, email, password);
-      toast.success("Account created successfully");
+      toast.success("Account created successfully!");
     } catch (err) {
-      const data = err?.response?.data;
+      console.log("Register error:", err.response?.data);
+      
       let msg = "Registration failed";
-      if (data?.email) msg = data.email[0];
-      else if (data?.password) msg = data.password[0];
+      
+      // Handle different error response formats
+      if (err?.response?.data) {
+        const data = err.response.data;
+        // Direct detail field
+        if (data.detail) {
+          msg = data.detail;
+        }
+        // Email specific errors
+        else if (data.email && Array.isArray(data.email)) {
+          msg = data.email[0];
+        }
+        // Password specific errors
+        else if (data.password && Array.isArray(data.password)) {
+          msg = data.password[0];
+        }
+        // Non-field errors
+        else if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+          msg = data.non_field_errors[0];
+        }
+      }
+      
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -44,9 +65,18 @@ const Register = () => {
     setGoogleLoading(true);
     try {
       await googleLogin(response.credential);
-      toast.success("Google login successful");
-    } catch {
-      toast.error("Google sign-in failed");
+      toast.success("Google login successful!");
+    } catch (err) {
+      console.log("Google login error:", err.response?.data);
+      
+      let msg = "Google sign-in failed. Try again.";
+      
+      // Extract specific error message if available
+      if (err?.response?.data?.detail) {
+        msg = err.response.data.detail;
+      }
+      
+      toast.error(msg);
     } finally {
       setGoogleLoading(false);
     }
@@ -56,12 +86,9 @@ const Register = () => {
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-slate-900 p-4">
-      <div className="max-w-sm w-full bg-slate-800 p-6 rounded-lg border border-slate-700">
-        <h2 className="text-2xl text-white font-bold text-center mb-5">
-          Create Account
-        </h2>
+      <div className="max-w-md w-full bg-slate-800 p-8 rounded-xl border border-slate-700">
 
-        <form className="space-y-3" onSubmit={submit}>
+        <form className="space-y-4" onSubmit={submit}>
           <input
             type="text"
             name="firstName"
@@ -69,7 +96,7 @@ const Register = () => {
             value={firstName}
             onChange={onChange}
             placeholder="First Name"
-            className="w-full bg-slate-700 text-white p-2.5 rounded border border-slate-600"
+            className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
           />
 
           <input
@@ -79,7 +106,7 @@ const Register = () => {
             value={lastName}
             onChange={onChange}
             placeholder="Last Name"
-            className="w-full bg-slate-700 text-white p-2.5 rounded border border-slate-600"
+            className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
           />
 
           <input
@@ -89,7 +116,7 @@ const Register = () => {
             value={email}
             onChange={onChange}
             placeholder="Email"
-            className="w-full bg-slate-700 text-white p-2.5 rounded border border-slate-600"
+            className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
           />
 
           <input
@@ -100,25 +127,25 @@ const Register = () => {
             value={password}
             onChange={onChange}
             placeholder="Password (min 8 characters)"
-            className="w-full bg-slate-700 text-white p-2.5 rounded border border-slate-600"
+            className="w-full bg-slate-700 text-white p-3 rounded border border-slate-600 focus:ring-2 focus:ring-red-500"
           />
 
           <button
             type="submit"
             disabled={disabled}
-            className={`w-full p-2.5 rounded text-lg font-semibold text-white transition
+            className={`w-full p-3 rounded text-lg font-semibold text-white transition
             ${disabled ? "bg-red-800 opacity-70 cursor-not-allowed"
                        : "bg-red-600 hover:bg-red-700"}`}
           >
-            {loading ? "Creating..." : "Register"}
+            {loading ? "Creating account..." : "Register"}
           </button>
         </form>
 
-        <div className="mt-5 flex flex-col items-center space-y-2">
+        <div className="mt-6 flex flex-col items-center space-y-3">
           <div className="text-gray-500">OR</div>
 
           {googleLoading ? (
-            <p className="text-gray-300 text-sm">Connecting...</p>
+            <p className="text-slate-300 text-sm">Connecting to Google...</p>
           ) : (
             <GoogleLogin
               onSuccess={onGoogleSuccess}
@@ -128,7 +155,7 @@ const Register = () => {
           )}
         </div>
 
-        <p className="text-gray-400 text-center mt-5">
+        <p className="text-slate-400 text-center mt-6">
           Already have an account?{" "}
           <Link
             to="/login"
@@ -143,3 +170,4 @@ const Register = () => {
 };
 
 export default Register;
+

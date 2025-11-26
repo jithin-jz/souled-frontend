@@ -69,9 +69,9 @@ const EditProduct = () => {
 
       <main className="flex-grow flex items-center justify-center px-4 py-8">
         {loading ? (
-          <p className="text-gray-400">Loading product...</p>
+          <p className="text-slate-400">Loading product...</p>
         ) : (
-          <div className="w-full max-w-xl bg-gray-900 border border-gray-800 p-6 rounded-xl">
+          <div className="w-full max-w-xl bg-slate-900 border border-slate-800 p-6 rounded-xl">
             <h2 className="text-xl font-semibold text-white mb-6 text-center">Edit Product</h2>
             <form onSubmit={handleSubmit} className="space-y-4 text-sm">
               <div>
@@ -81,7 +81,7 @@ const EditProduct = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-800 text-white outline-none border border-gray-700"
+                  className="w-full p-2 rounded bg-slate-800 text-white outline-none border border-slate-700"
                 />
               </div>
 
@@ -92,7 +92,7 @@ const EditProduct = () => {
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-800 text-white outline-none border border-gray-700"
+                  className="w-full p-2 rounded bg-slate-800 text-white outline-none border border-slate-700"
                 />
               </div>
 
@@ -102,7 +102,7 @@ const EditProduct = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-800 text-white outline-none border border-gray-700"
+                  className="w-full p-2 rounded bg-slate-800 text-white outline-none border border-slate-700"
                 >
                   <option value="Men">Men</option>
                   <option value="Women">Women</option>
@@ -116,7 +116,7 @@ const EditProduct = () => {
                   name="stock"
                   value={formData.stock}
                   onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-800 text-white outline-none border border-gray-700"
+                  className="w-full p-2 rounded bg-slate-800 text-white outline-none border border-slate-700"
                 />
               </div>
 
@@ -127,7 +127,7 @@ const EditProduct = () => {
                   name="image"
                   value={formData.image}
                   onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-800 text-white outline-none border border-gray-700"
+                  className="w-full p-2 rounded bg-slate-800 text-white outline-none border border-slate-700"
                 />
               </div>
 
@@ -136,7 +136,7 @@ const EditProduct = () => {
                 disabled={submitting}
                 className={`w-full py-2 rounded font-medium ${
                   submitting
-                    ? 'bg-gray-700 cursor-not-allowed'
+                    ? 'bg-slate-700 cursor-not-allowed'
                     : 'bg-blue-600 hover:bg-blue-500'
                 } transition`}
               >
@@ -147,7 +147,7 @@ const EditProduct = () => {
         )}
       </main>
 
-      <footer className="text-center text-xs p-4 text-gray-500 border-t border-gray-800">
+      <footer className="text-center text-xs p-4 text-slate-500 border-t border-slate-800">
         &copy; {new Date().getFullYear()} <span className="text-white font-semibold">Souled Admin</span>
       </footer>
     </div>
@@ -155,3 +155,4 @@ const EditProduct = () => {
 };
 
 export default EditProduct;
+

@@ -3,7 +3,7 @@ import { FaInstagram, FaFacebookF, FaWhatsapp } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-gray-400 py-6 border-t border-slate-800">
+    <footer className="bg-slate-900 text-slate-400 py-6 border-t border-slate-800">
       <div className="max-w-4xl mx-auto px-4 text-center">
 
         {/* Brand */}
@@ -35,3 +35,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

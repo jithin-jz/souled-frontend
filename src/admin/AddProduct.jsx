@@ -69,7 +69,7 @@ const AddProduct = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Iron Man T-Shirt"
-                className="w-full p-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full p-3 rounded-lg bg-slate-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
 
@@ -84,7 +84,7 @@ const AddProduct = () => {
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="499"
-                className="w-full p-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full p-3 rounded-lg bg-slate-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
 
@@ -96,7 +96,7 @@ const AddProduct = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full p-3 rounded-lg bg-slate-800 text-white outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="Men">Men</option>
                 <option value="Women">Women</option>
@@ -114,7 +114,7 @@ const AddProduct = () => {
                 value={formData.stock}
                 onChange={handleChange}
                 placeholder="100"
-                className="w-full p-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full p-3 rounded-lg bg-slate-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
 
@@ -128,7 +128,7 @@ const AddProduct = () => {
                 value={formData.image}
                 onChange={handleChange}
                 placeholder="https://example.com/image.jpg"
-                className="w-full p-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full p-3 rounded-lg bg-slate-800 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
 
@@ -143,7 +143,7 @@ const AddProduct = () => {
         </div>
       </main>
 
-      <footer className="text-center text-sm p-4 bg-gray-950 text-gray-400 border-t border-gray-800">
+      <footer className="text-center text-sm p-4 bg-gray-950 text-slate-400 border-t border-slate-800">
         &copy; {new Date().getFullYear()} <span className="text-white font-semibold">Souled Admin</span>. All rights reserved.
       </footer>
     </div>
@@ -151,3 +151,4 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
+

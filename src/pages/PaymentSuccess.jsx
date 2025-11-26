@@ -62,8 +62,8 @@ const PaymentSuccess = () => {
   }, [sessionId, navigate, reloadCart]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white py-20 px-4 flex items-center justify-center">
-      <div className="max-w-xl mx-auto bg-gray-800 rounded-xl p-8 shadow-xl text-center space-y-6">
+    <div className="min-h-screen bg-slate-900 text-white py-20 px-4 flex items-center justify-center">
+      <div className="max-w-xl mx-auto bg-slate-800 rounded-xl p-8 shadow-xl text-center space-y-6">
 
         {loading ? (
           <>
@@ -98,3 +98,4 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
+

@@ -95,14 +95,14 @@ const ManageAddresses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white py-8 px-4">
+    <div className="min-h-screen bg-slate-900 text-white py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">My Addresses</h1>
@@ -118,7 +118,7 @@ const ManageAddresses = () => {
         {showForm && (
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-800 p-6 rounded-lg mb-6 space-y-4"
+            className="bg-slate-800 p-6 rounded-lg mb-6 space-y-4"
           >
             <h2 className="text-xl font-semibold mb-4">
               {editingId ? "Edit Address" : "Add New Address"}
@@ -131,7 +131,7 @@ const ManageAddresses = () => {
                 value={formData.full_name}
                 onChange={handleChange}
                 required
-                className="bg-gray-700 px-4 py-2 rounded border border-gray-600 focus:ring-2 focus:ring-green-500"
+                className="bg-slate-700 px-4 py-2 rounded border border-slate-600 focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="text"
@@ -141,7 +141,7 @@ const ManageAddresses = () => {
                 onChange={handleChange}
                 required
                 pattern="[0-9]{10}"
-                className="bg-gray-700 px-4 py-2 rounded border border-gray-600 focus:ring-2 focus:ring-green-500"
+                className="bg-slate-700 px-4 py-2 rounded border border-slate-600 focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="text"
@@ -150,7 +150,7 @@ const ManageAddresses = () => {
                 value={formData.street}
                 onChange={handleChange}
                 required
-                className="md:col-span-2 bg-gray-700 px-4 py-2 rounded border border-gray-600 focus:ring-2 focus:ring-green-500"
+                className="md:col-span-2 bg-slate-700 px-4 py-2 rounded border border-slate-600 focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="text"
@@ -159,7 +159,7 @@ const ManageAddresses = () => {
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="bg-gray-700 px-4 py-2 rounded border border-gray-600 focus:ring-2 focus:ring-green-500"
+                className="bg-slate-700 px-4 py-2 rounded border border-slate-600 focus:ring-2 focus:ring-green-500"
               />
               <input
                 type="text"
@@ -169,7 +169,7 @@ const ManageAddresses = () => {
                 onChange={handleChange}
                 required
                 pattern="[0-9]{6}"
-                className="bg-gray-700 px-4 py-2 rounded border border-gray-600 focus:ring-2 focus:ring-green-500"
+                className="bg-slate-700 px-4 py-2 rounded border border-slate-600 focus:ring-2 focus:ring-green-500"
               />
             </div>
             <div className="flex gap-4">
@@ -182,7 +182,7 @@ const ManageAddresses = () => {
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg font-semibold transition"
+                className="bg-slate-600 hover:bg-slate-700 px-6 py-2 rounded-lg font-semibold transition"
               >
                 Cancel
               </button>
@@ -192,7 +192,7 @@ const ManageAddresses = () => {
 
         {/* Address List */}
         {addresses.length === 0 ? (
-          <div className="text-center text-gray-400 py-12">
+          <div className="text-center text-slate-400 py-12">
             <p className="text-lg">No saved addresses yet.</p>
             <p className="text-sm mt-2">
               Click "Add New Address" to get started.
@@ -203,12 +203,12 @@ const ManageAddresses = () => {
             {addresses.map((address) => (
               <div
                 key={address.id}
-                className="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-600 transition"
+                className="bg-slate-800 p-4 rounded-lg border border-slate-700 hover:border-slate-600 transition"
               >
                 <h3 className="font-semibold text-lg">{address.full_name}</h3>
-                <p className="text-gray-300 mt-1">{address.phone}</p>
-                <p className="text-gray-400 mt-2">{address.street}</p>
-                <p className="text-gray-400">
+                <p className="text-slate-300 mt-1">{address.phone}</p>
+                <p className="text-slate-400 mt-2">{address.street}</p>
+                <p className="text-slate-400">
                   {address.city}, {address.pincode}
                 </p>
                 <div className="flex gap-3 mt-4">
@@ -235,3 +235,4 @@ const ManageAddresses = () => {
 };
 
 export default ManageAddresses;
+

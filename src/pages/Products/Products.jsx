@@ -168,7 +168,7 @@ const Products = () => {
 
   return (
     // Responsive container setup: uses full width on small screens, centers content.
-    <div className="min-h-screen bg-gray-900 text-white pb-8">
+    <div className="min-h-screen bg-slate-900 text-white pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/*
           Filters component is passed props to control its visibility.
@@ -194,7 +194,7 @@ const Products = () => {
           {loading ? (
             <Loader />
           ) : allProducts.length === 0 ? (
-            <p className="text-center text-xl text-gray-400 py-10">
+            <p className="text-center text-xl text-slate-400 py-10">
               No products found matching the criteria.
             </p>
           ) : (

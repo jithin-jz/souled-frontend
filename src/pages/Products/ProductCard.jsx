@@ -35,18 +35,18 @@ const ProductCard = ({
       {/* Wishlist Toggle */}
       <button
         onClick={handleWishlist}
-        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-gray-900/80 backdrop-blur-sm transition-transform hover:scale-110"
+        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-slate-900/80 backdrop-blur-sm transition-transform hover:scale-110"
       >
         {isWishlisted ? (
           <FaHeart className="text-red-500" />
         ) : (
-          <FiHeart className="text-gray-400 group-hover:text-red-500" />
+          <FiHeart className="text-slate-400 group-hover:text-red-500" />
         )}
       </button>
 
       {/* Product Link */}
       <Link to={`/products/${product.id}`} className="block">
-        <div className="overflow-hidden rounded-lg bg-gray-800">
+        <div className="overflow-hidden rounded-lg bg-slate-800">
           <img
             src={
               product.image ||
@@ -66,7 +66,7 @@ const ProductCard = ({
             <h3 className="text-white font-medium truncate">
               {product.name}
             </h3>
-            <p className="text-gray-300 font-bold">
+            <p className="text-slate-300 font-bold">
               ₹{Number(product.price).toLocaleString("en-IN")}
             </p>
           </div>
@@ -84,3 +84,4 @@ const ProductCard = ({
 };
 
 export default ProductCard;
+
