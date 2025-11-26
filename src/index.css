@@ -89,3 +89,24 @@ body {
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
 }
+
+
+.jump-arrow {
+  animation: jump 0.8s ease-in-out infinite;
+}
+
+@keyframes jump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.mt-8 {
+  margin-top: 2rem; /* instead of 4 or 6 */
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
+}

@@ -52,7 +52,9 @@ const ProfileDetails = () => {
     <div className="min-h-screen bg-slate-900 py-8">
       <div className="max-w-xl mx-auto px-4">
         <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-6">
-          <h2 className="text-2xl font-bold text-red-500">Account</h2>
+          <div className="flex items-center justify-center">
+            <h2 className="text-2xl font-bold text-red-500 text-center">Account</h2>
+          </div>
 
           {/* Basic info */}
           <div className="space-y-2 text-slate-300">

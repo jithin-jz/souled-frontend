@@ -184,7 +184,7 @@ const Home = () => {
 
       {/* NEW ARRIVALS */}
       <section className="px-4">
-        <h2 className="mb-4 text-xl sm:text-2xl font-bold">New Arrivals</h2>
+        <h2 className="mb-4 text-xl sm:text-2xl font-bold">NEW ARRIVALS</h2>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4">
           {newArrivals.map((product) => (
             <ProductCard
@@ -199,7 +199,7 @@ const Home = () => {
 
       {/* FEATURED PRODUCTS */}
       <section className="px-4">
-        <h2 className="mb-4 text-xl sm:text-2xl font-bold">Featured Products</h2>
+        <h2 className="mb-4 text-xl sm:text-2xl font-bold">FEATURED PRODUCTS</h2>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4">
           {featuredProducts.map((product) => (
             <ProductCard
@@ -212,14 +212,19 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="px-4 text-center pb-0">
-        <Link
-          to="/products"
-          className="inline-block rounded-xl bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold transition-colors shadow-lg"
-        >
-          View All Products
-        </Link>
-      </div>
+      <div className="flex flex-col items-center mt-8 mb-6">
+  <span className="text-base font-bold tracking-widest text-red-500">
+    VIEW ALL PRODUCTS
+  </span>
+
+  <Link
+    to="/products"
+    className="text-red-600 hover:text-red-700 text-6xl font-extrabold leading-none jump-arrow"
+  >
+    ᗐ
+  </Link>
+</div>
+
     </div>
   );
 };
