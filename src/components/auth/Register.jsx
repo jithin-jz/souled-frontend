@@ -32,8 +32,6 @@ const Register = () => {
       toast.success("Account created successfully!");
       navigate("/");
     } catch (err) {
-      console.log("Register error:", err.response?.data);
-      
       let msg = "Registration failed";
       
       // Handle different error response formats
@@ -70,8 +68,6 @@ const Register = () => {
       toast.success("Google login successful!");
       navigate("/");
     } catch (err) {
-      console.log("Google login error:", err.response?.data);
-      
       let msg = "Google sign-in failed. Try again.";
       
       // Extract specific error message if available

@@ -34,8 +34,6 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.log("Login error:", err.response?.data);
-      
       let msg = "Invalid email or password.";
       
       // Handle different error response formats
@@ -73,8 +71,6 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.log("Google login error:", err.response?.data);
-      
       let msg = "Google login failed. Try again.";
       
       // Extract specific error message if available

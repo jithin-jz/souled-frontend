@@ -27,10 +27,8 @@ const PaymentSuccess = () => {
 
     const verifyPayment = async () => {
       // Reload cart from backend (backend already cleared it after order creation)
-      console.log("Reloading cart from backend...");
       try {
         await reloadCart();
-        console.log("Cart reloaded successfully");
       } catch (err) {
         console.error("Error reloading cart:", err);
       }
@@ -39,8 +37,6 @@ const PaymentSuccess = () => {
       try {
         const res = await api.get(`/orders/verify-payment/?session_id=${sessionId}`);
         const { payment_verified, status } = res.data;
-
-        console.log("Payment verification result:", { payment_verified, status });
 
         // Display appropriate message based on payment status
         if (status === "processing" || status === "paid") {

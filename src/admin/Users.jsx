@@ -13,10 +13,8 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     try {
       const res = await api.get("/panel/users/");
-      console.log("USERS:", res.data);
       setUsers(res.data);
     } catch (error) {
-      console.log(error);
       toast.error("Failed to fetch users");
     }
   };
@@ -36,7 +34,6 @@ const AdminUsers = () => {
         res.data.isBlock ? "User blocked successfully" : "User unblocked successfully"
       );
     } catch (error) {
-      console.log(error);
       toast.error("Failed to update user status");
     }
   };
@@ -56,7 +53,6 @@ const AdminUsers = () => {
       setUsers((prevUsers) => prevUsers.filter((u) => u.id !== deleteModal.userId));
       closeDeleteModal();
     } catch (error) {
-      console.log(error);
       toast.error("Failed to delete user");
     }
   };

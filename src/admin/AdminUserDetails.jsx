@@ -15,7 +15,6 @@ const AdminUserDetails = () => {
     const loadUser = async () => {
       try {
         const res = await api.get(`/panel/users/${id}/`);
-        console.log("USER:", res.data);
 
         if (!res.data) {
           toast.error("User not found");
@@ -34,7 +33,6 @@ const AdminUserDetails = () => {
         setUser(mappedUser);
         setOrders(res.data.orders || []);
       } catch (err) {
-        console.log(err);
         toast.error("Failed to fetch user");
       } finally {
         setLoading(false);
