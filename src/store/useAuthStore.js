@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { authApi } from '../api/authApi';
+import { tokenManager } from '../utils/api';
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -17,18 +18,36 @@ const useAuthStore = create((set, get) => ({
   },
 
   login: async (email, password) => {
-    await authApi.login(email, password);
-    return get().loadUser();
+    const res = await authApi.login(email, password);
+    // Save tokens to localStorage
+    if (res.data.access && res.data.refresh) {
+      tokenManager.setTokens(res.data.access, res.data.refresh);
+    }
+    // Set user from response
+    set({ user: res.data.user, loading: false });
+    return res.data.user;
   },
 
   register: async (first_name, last_name, email, password) => {
-    await authApi.register(first_name, last_name, email, password);
-    return get().loadUser();
+    const res = await authApi.register(first_name, last_name, email, password);
+    // Save tokens to localStorage
+    if (res.data.access && res.data.refresh) {
+      tokenManager.setTokens(res.data.access, res.data.refresh);
+    }
+    // Set user from response
+    set({ user: res.data.user, loading: false });
+    return res.data.user;
   },
 
   googleLogin: async (credential) => {
-    await authApi.googleLogin(credential);
-    return get().loadUser();
+    const res = await authApi.googleLogin(credential);
+    // Save tokens to localStorage
+    if (res.data.access && res.data.refresh) {
+      tokenManager.setTokens(res.data.access, res.data.refresh);
+    }
+    // Set user from response
+    set({ user: res.data.user, loading: false });
+    return res.data.user;
   },
 
   logout: async () => {
@@ -37,6 +56,8 @@ const useAuthStore = create((set, get) => ({
     } catch (error) {
       console.error("Logout failed", error);
     }
+    // Clear tokens from localStorage
+    tokenManager.clearTokens();
     set({ user: null });
   },
 }));

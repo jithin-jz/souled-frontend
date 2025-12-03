@@ -6,17 +6,26 @@ if (!API_URL) {
   console.error("Missing VITE_API_URL in .env");
 }
 
+// Token management
+export const tokenManager = {
+  getAccessToken: () => localStorage.getItem("access_token"),
+  getRefreshToken: () => localStorage.getItem("refresh_token"),
+  setTokens: (access, refresh) => {
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+  },
+  clearTokens: () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+  },
+};
+
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
   timeout: 15000,
-  xsrfCookieName: 'csrftoken',  // Django CSRF cookie name
-  xsrfHeaderName: 'X-CSRFToken', // Django CSRF header name
-});
-
-const refreshApi = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 let onLogoutCallback = () => {
@@ -30,72 +39,96 @@ export const setLogoutCallback = (cb) => {
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else p.resolve();
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
   });
   failedQueue = [];
 };
 
+// Request interceptor - add Authorization header
+api.interceptors.request.use(
+  (config) => {
+    const token = tokenManager.getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor - handle token refresh
 api.interceptors.response.use(
-  (res) => res,
-  async (err) => {
-    const { response, config: original } = err;
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-    if (!response) {
-      // Network/CORS error, nothing to refresh
-      return Promise.reject(err);
+    // Not a 401 or no response
+    if (!error.response || error.response.status !== 401) {
+      return Promise.reject(error);
     }
 
-    // Not a 401 → let caller handle it
-    if (response.status !== 401) {
-      return Promise.reject(err);
-    }
-
-    // 401 from "no credentials" (guest user, e.g. /me/ when logged out)
-    // In this case we DO NOT try refresh or logout, just pass the error through.
-    const detail = response.data?.detail;
-    if (detail === "Authentication credentials were not provided.") {
-      return Promise.reject(err);
-    }
-
-    // Prevent infinite loop
-    if (original._retry) {
+    // Don't retry if already retried
+    if (originalRequest._retry) {
+      tokenManager.clearTokens();
       onLogoutCallback();
-      return Promise.reject(err);
+      return Promise.reject(error);
     }
 
-    original._retry = true;
+    // If this is a refresh request that failed, logout
+    if (originalRequest.url === "/refresh/") {
+      tokenManager.clearTokens();
+      onLogoutCallback();
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
 
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
-        failedQueue.push({
-          resolve: () => resolve(api(original)),
-          reject,
-        });
-      });
+        failedQueue.push({ resolve, reject });
+      })
+        .then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        })
+        .catch((err) => Promise.reject(err));
     }
 
     isRefreshing = true;
+    const refreshToken = tokenManager.getRefreshToken();
+
+    if (!refreshToken) {
+      isRefreshing = false;
+      tokenManager.clearTokens();
+      onLogoutCallback();
+      return Promise.reject(error);
+    }
 
     try {
-      // Browser sends refresh cookie automatically
-      await refreshApi.post("/refresh/");
+      const response = await axios.post(`${API_URL}/refresh/`, {
+        refresh: refreshToken,
+      });
+
+      const { access } = response.data;
+      tokenManager.setTokens(access, refreshToken);
 
       isRefreshing = false;
-      processQueue(null);
+      processQueue(null, access);
 
-      // Retry original failed request with new access token
-      return api(original);
-    } catch (refreshErr) {
+      originalRequest.headers.Authorization = `Bearer ${access}`;
+      return api(originalRequest);
+    } catch (refreshError) {
       isRefreshing = false;
-      processQueue(refreshErr);
-
-      // Refresh failed → real auth problem → hard logout
+      processQueue(refreshError, null);
+      tokenManager.clearTokens();
       onLogoutCallback();
-
-      return Promise.reject(refreshErr);
+      return Promise.reject(refreshError);
     }
   }
 );
