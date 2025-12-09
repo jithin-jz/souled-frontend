@@ -11,7 +11,7 @@
 
 **Lightning-fast** shopping experience with smooth animations, responsive design, and modern UI/UX patterns.
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Tech Stack](#-tech-stack) • [Deployment](#-deployment)
+[Features](#-features) • [Screenshots](#-screenshots) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Tech Stack](#-tech-stack)
 
 </div>
 
@@ -60,7 +60,27 @@
 
 ---
 
-## � Quick Start
+## 📸 Screenshots
+
+### Home Page
+
+![Home Page](./screenshots/home.png)
+
+### Products Listing
+
+![Products Page](./screenshots/products.png)
+
+### Shopping Cart
+
+![Cart Page](./screenshots/cart.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -82,12 +102,20 @@ Backend API running on localhost:8000
 
 2. **Environment Configuration**
 
-   Create `.env` file:
+   Copy `.env.example` to `.env` and update with your values:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then edit `.env` with your configuration:
 
    ```env
    VITE_API_URL=http://localhost:8000/api
    VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
    ```
+
+   See [.env.example](./.env.example) for detailed setup instructions.
 
 3. **Start Development Server**
 
@@ -227,6 +255,15 @@ Souled/
 
 ---
 
+## 📚 Documentation
+
+- **[API Documentation](./API_DOCS.md)** - Complete API endpoint reference
+- **[Testing Guide](./TESTING.md)** - Testing setup and guidelines
+- **[Environment Setup](./.env.example)** - Environment variables configuration
+- **[Deployment Guide](./DEPLOYMENT.md)** - Deployment instructions
+
+---
+
 ## 🧪 Testing
 
 ```bash
@@ -338,6 +375,52 @@ export default {
 - **Asset Optimization** - Image and CSS optimization
 - **Fast Refresh** - Instant HMR during development
 - **Lighthouse Score** - 90+ on all metrics
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Application won't start
+
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+#### API connection errors
+
+- Verify `VITE_API_URL` in `.env` is correct
+- Ensure backend server is running
+- Check CORS settings on backend
+
+#### Google OAuth not working
+
+- Verify `VITE_GOOGLE_CLIENT_ID` is correct
+- Check authorized origins in Google Console
+- Ensure redirect URIs are configured
+
+#### Build errors
+
+```bash
+# Clear Vite cache
+rm -rf node_modules/.vite
+npm run dev
+```
+
+#### Images not loading
+
+- Check backend media URL configuration
+- Verify CORS allows image requests
+- Ensure backend serves static files correctly
+
+### Getting Help
+
+- Check [API Documentation](./API_DOCS.md) for endpoint details
+- Review [Testing Guide](./TESTING.md) for debugging tips
+- Open an issue on GitHub with error details
 
 ---
 
