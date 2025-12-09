@@ -60,8 +60,8 @@ const AdminProducts = () => {
               className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-pink-500 outline-none"
             >
               <option value="">All Categories</option>
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
             </select>
 
             <input
@@ -137,6 +137,11 @@ const AdminProducts = () => {
           </table>
         </div>
       </main>
+
+      <footer className="text-center text-sm p-4 bg-slate-900 text-slate-400 border-t border-slate-800">
+        © {new Date().getFullYear()}{' '}
+        <span className="text-white font-semibold">Souled Admin</span>. All rights reserved.
+      </footer>
     </div>
   );
 };

@@ -45,7 +45,7 @@ const AdminOrderManagement = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 text-white">
+    <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <AdminNavbar />
 
       <main className="flex-grow px-4 py-10 max-w-7xl mx-auto w-full">
@@ -182,7 +182,7 @@ const AdminOrderManagement = () => {
         )}
       </main>
 
-      <footer className="text-center text-sm p-4 bg-gray-950 text-slate-500 border-t border-slate-800">
+      <footer className="text-center text-sm p-4 bg-slate-900 text-slate-400 border-t border-slate-800">
         &copy; {new Date().getFullYear()}{' '}
         <span className="text-white font-semibold">Souled Admin</span>. All rights reserved.
       </footer>

@@ -114,6 +114,15 @@ const AdminOrderDetails = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs uppercase text-slate-400 mb-1">
+                  Payment Method
+                </label>
+                <div className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white capitalize">
+                  {order.payment_method}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase text-slate-400 mb-1">
                   Payment Status
                 </label>
                 <select
@@ -203,6 +212,11 @@ const AdminOrderDetails = () => {
           </div>
         </div>
       </main>
+
+      <footer className="text-center text-sm p-4 bg-slate-900 text-slate-400 border-t border-slate-800">
+        © {new Date().getFullYear()}{' '}
+        <span className="text-white font-semibold">Souled Admin</span>. All rights reserved.
+      </footer>
     </div>
   );
 };

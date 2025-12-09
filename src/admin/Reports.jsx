@@ -138,8 +138,9 @@ const Reports = () => {
         )}
       </main>
 
-      <footer className="text-center text-sm p-4 bg-gray-950 text-slate-400 border-t border-slate-800">
-        &copy; {new Date().getFullYear()} <span className="text-white font-semibold">SOULED Admin</span>. All rights reserved.
+      <footer className="text-center text-sm p-4 bg-slate-900 text-slate-400 border-t border-slate-800">
+        © {new Date().getFullYear()}{' '}
+        <span className="text-white font-semibold">Souled Admin</span>. All rights reserved.
       </footer>
     </div>
   );

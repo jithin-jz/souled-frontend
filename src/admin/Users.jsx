@@ -88,7 +88,7 @@ const AdminUsers = () => {
                 >
                   <td className="p-4">{user.name || "No Name"}</td>
                   <td className="p-4">{user.email}</td>
-                  <td className="p-4 capitalize">{user.role || "customer"}</td>
+                  <td className="p-4 capitalize">{user.role || "user"}</td>
                   <td className="p-4">
                     <span
                       className={`font-medium ${
