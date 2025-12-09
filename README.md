@@ -75,28 +75,33 @@
 
 <div align="center">
 
-### 🏠 Home Page
-
-<img src="./screenshots/home.png" alt="Home Page" width="800"/>
-
-### 🛒 Products & Cart
-
 <table>
 <tr>
+<td colspan="2" align="center">
+<h3>🖼️ Application Preview</h3>
+</td>
+</tr>
+<tr>
 <td width="50%">
-<img src="./screenshots/products.png" alt="Products" width="100%"/>
-<p align="center"><b>Product Listing</b></p>
+<img src="./screenshots/home.png" alt="Home Page" width="100%"/>
+<p align="center"><b>🏠 Home Page</b></p>
 </td>
 <td width="50%">
+<img src="./screenshots/products.png" alt="Products" width="100%"/>
+<p align="center"><b>🛍️ Products Listing</b></p>
+</td>
+</tr>
+<tr>
+<td width="50%">
 <img src="./screenshots/cart.png" alt="Cart" width="100%"/>
-<p align="center"><b>Shopping Cart</b></p>
+<p align="center"><b>🛒 Shopping Cart</b></p>
+</td>
+<td width="50%">
+<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="100%"/>
+<p align="center"><b>📊 Admin Dashboard</b></p>
 </td>
 </tr>
 </table>
-
-### 📊 Admin Dashboard
-
-<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="800"/>
 
 </div>
 
