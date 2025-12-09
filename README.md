@@ -12,23 +12,6 @@ _Modern e-commerce experience built with React & Vite_
 
 <br/>
 
-<p align="center">
-  <a href="#features">
-    <img src="https://img.shields.io/badge/✨_Features-4A90E2?style=for-the-badge&labelColor=2C3E50" alt="Features"/>
-  </a>
-  <a href="#screenshots">
-    <img src="https://img.shields.io/badge/📸_Screenshots-9B59B6?style=for-the-badge&labelColor=2C3E50" alt="Screenshots"/>
-  </a>
-  <a href="#quick-start">
-    <img src="https://img.shields.io/badge/🚀_Quick_Start-27AE60?style=for-the-badge&labelColor=2C3E50" alt="Quick Start"/>
-  </a>
-  <a href="#tech-stack">
-    <img src="https://img.shields.io/badge/🛠️_Tech_Stack-E67E22?style=for-the-badge&labelColor=2C3E50" alt="Tech Stack"/>
-  </a>
-  <a href="#documentation">
-    <img src="https://img.shields.io/badge/📚_Documentation-E74C3C?style=for-the-badge&labelColor=2C3E50" alt="Documentation"/>
-  </a>
-</p>
 
 </div>
 
