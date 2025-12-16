@@ -61,7 +61,7 @@ const AppContent = () => {
     useEffect(() => {
         setLogoutCallback(() => {
             logout();
-            navigate("/login");
+            navigate("/");
         });
     }, [logout, navigate]);
 

@@ -22,7 +22,7 @@ const Navbar = () => {
   const cart = useCartStore((state) => state.cart);
   const wishlistItems = useCartStore((state) => state.wishlistItems);
   const loading = useCartStore((state) => state.loading);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,10 +39,10 @@ const Navbar = () => {
     !loading && Number.isFinite(wishlistCount) && wishlistCount > 0
       ? wishlistCount
       : 0;
-      
+
   const handleLogout = async () => {
-      await logout();
-      navigate("/login");
+    await logout();
+    navigate("/");
   };
 
   useEffect(() => {
@@ -67,7 +67,12 @@ const Navbar = () => {
 
   const userLinks = [
     { to: "/cart", icon: <FiShoppingCart />, label: "Cart", badge: cartBadge },
-    { to: "/wishlist", icon: <FiHeart />, label: "Wishlist", badge: wishlistBadge },
+    {
+      to: "/wishlist",
+      icon: <FiHeart />,
+      label: "Wishlist",
+      badge: wishlistBadge,
+    },
     { to: "/orders", icon: <FiPackage />, label: "Orders" },
   ];
 
@@ -81,7 +86,6 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-slate-900 shadow">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between relative">
-
         {/* Desktop Left */}
         <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
@@ -188,7 +192,10 @@ const Navbar = () => {
             {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
 
-          <Link to="/cart" className="relative p-2 text-white hover:bg-slate-700">
+          <Link
+            to="/cart"
+            className="relative p-2 text-white hover:bg-slate-700"
+          >
             <FiShoppingCart size={22} />
             {cartBadge > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -207,7 +214,9 @@ const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`flex items-center gap-2 p-2 rounded-md ${
-                isActive(link.to) ? "bg-slate-800" : "text-white hover:bg-slate-700"
+                isActive(link.to)
+                  ? "bg-slate-800"
+                  : "text-white hover:bg-slate-700"
               }`}
             >
               {link.icon} {link.label}
@@ -221,7 +230,9 @@ const Navbar = () => {
                   key={link.to}
                   to={link.to}
                   className={`flex items-center gap-2 p-2 rounded-md ${
-                    isActive(link.to) ? "bg-slate-800" : "text-white hover:bg-slate-700"
+                    isActive(link.to)
+                      ? "bg-slate-800"
+                      : "text-white hover:bg-slate-700"
                   }`}
                 >
                   {link.icon} {link.label}
@@ -246,7 +257,9 @@ const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={`flex items-center gap-2 p-2 rounded-md ${
-                  isActive(link.to) ? "bg-slate-800" : "text-white hover:bg-slate-700"
+                  isActive(link.to)
+                    ? "bg-slate-800"
+                    : "text-white hover:bg-slate-700"
                 }`}
               >
                 {link.icon} {link.label}
@@ -260,4 +273,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
