@@ -127,7 +127,7 @@ const Navbar = () => {
                 >
                   {link.icon}
                   {link.badge > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-sm border border-slate-900">
                       {link.badge}
                     </span>
                   )}
@@ -198,7 +198,7 @@ const Navbar = () => {
           >
             <FiShoppingCart size={22} />
             {cartBadge > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-sm border border-slate-900">
                 {cartBadge}
               </span>
             )}
@@ -237,7 +237,7 @@ const Navbar = () => {
                 >
                   {link.icon} {link.label}
                   {link.badge > 0 && (
-                    <span className="ml-auto bg-red-600 text-white text-xs font-bold rounded-full px-2">
+                    <span className="ml-auto bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                       {link.badge}
                     </span>
                   )}

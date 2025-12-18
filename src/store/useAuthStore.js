@@ -1,8 +1,9 @@
 import { create } from 'zustand';
+import { subscribeWithSelector } from 'zustand/middleware';
 import { authApi } from '../api/authApi';
 import { tokenManager } from '../utils/api';
 
-const useAuthStore = create((set, get) => ({
+const useAuthStore = create(subscribeWithSelector((set, get) => ({
   user: null,
   loading: true,
 
@@ -60,6 +61,6 @@ const useAuthStore = create((set, get) => ({
     tokenManager.clearTokens();
     set({ user: null });
   },
-}));
+})));
 
 export default useAuthStore;
