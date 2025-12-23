@@ -26,6 +26,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import OrderSuccess from "./pages/OrderSuccess";
 import ProfileDetails from "./pages/ProfileDetails";
 import ManageAddresses from "./pages/ManageAddresses";
+import NotFound from "./pages/NotFound";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
@@ -111,6 +112,9 @@ const AppContent = () => {
                         <Route path="/admin/orders/:id" element={<AdminOrderDetails />} />
                         <Route path="/admin/reports" element={<Reports />} />
                     </Route>
+
+                    {/* 404 Catch-all */}
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
 
