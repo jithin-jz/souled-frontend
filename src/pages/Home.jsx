@@ -15,7 +15,7 @@ const bannerImages = [
 ];
 
 /* PRODUCT CARD */
-const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
+const ProductCard = ({ product, isWishlisted, onToggleWishlist, onAddToCart }) => {
   const toggle = useCallback(
     (e) => {
       e.preventDefault();
@@ -23,6 +23,15 @@ const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
       onToggleWishlist(product);
     },
     [product, onToggleWishlist]
+  );
+
+  const handleAddToCart = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onAddToCart(product);
+    },
+    [product, onAddToCart]
   );
 
   return (
@@ -47,13 +56,23 @@ const ProductCard = ({ product, isWishlisted, onToggleWishlist }) => {
           />
         </div>
 
-        <div className="mt-3">
-          <h3 className="text-white text-sm sm:text-base font-medium truncate">
-            {product.name}
-          </h3>
-          <p className="text-slate-300 font-bold text-sm sm:text-base mt-1">
-            ₹{product.price}
-          </p>
+        {/* Name + Price + Cart Button */}
+        <div className="mt-3 flex justify-between items-center gap-2">
+          <div>
+            <h3 className="text-white text-sm sm:text-base font-medium truncate">
+              {product.name}
+            </h3>
+            <p className="text-slate-300 font-bold text-sm sm:text-base mt-1">
+              ₹{product.price}
+            </p>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            className="px-4 py-2 rounded-full bg-white text-black text-xs sm:text-sm font-semibold hover:bg-gray-200 transition-all"
+          >
+            Cart
+          </button>
         </div>
       </Link>
     </div>
@@ -70,6 +89,7 @@ const Home = () => {
   const addToWishlist = useCartStore((state) => state.addToWishlist);
   const removeFromWishlist = useCartStore((state) => state.removeFromWishlist);
   const isProductWishlisted = useCartStore((state) => state.isProductWishlisted);
+  const addToCart = useCartStore((state) => state.addToCart);
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -121,6 +141,18 @@ const Home = () => {
       }
     },
     [user, addToWishlist, removeFromWishlist, isProductWishlisted]
+  );
+
+  const handleAddToCart = useCallback(
+    (product) => {
+      if (!user) {
+        toast.warn("Please login to add items to cart");
+        return;
+      }
+      addToCart(product);
+      toast.success(`${product.name} added to cart`);
+    },
+    [user, addToCart]
   );
 
   if (loading) {
@@ -193,6 +225,7 @@ const Home = () => {
               key={product.id}
               product={product}
               onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
               isWishlisted={isProductWishlisted(product.id)}
             />
           ))}
@@ -208,6 +241,7 @@ const Home = () => {
               key={product.id}
               product={product}
               onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
               isWishlisted={isProductWishlisted(product.id)}
             />
           ))}
