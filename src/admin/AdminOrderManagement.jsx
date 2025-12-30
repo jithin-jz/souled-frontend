@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../utils/api';
-import { toast } from 'react-toastify';
 import AdminNavbar from './AdminNavbar';
+import { handleApiError } from '../utils/errorHandler';
+import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 
 const AdminOrderManagement = () => {
@@ -13,8 +15,7 @@ const AdminOrderManagement = () => {
       const res = await api.get('/orders/admin/all/');
       setOrders(res.data || []);
     } catch (error) {
-      toast.error('Failed to fetch orders');
-      console.error(error);
+      handleApiError(error, 'Failed to fetch orders');
     } finally {
       setLoading(false);
     }
@@ -36,8 +37,8 @@ const AdminOrderManagement = () => {
 
       toast.success(`${statusType === 'payment_status' ? 'Payment' : 'Order'} status updated successfully`);
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to update status');
-      console.error(error);
+      handleApiError(error, 'Failed to update status');
+      await fetchOrders();
     }
   };
 

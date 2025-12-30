@@ -46,7 +46,7 @@ const Wishlist = () => {
             
             <Link
               to="/products"
-              className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-colors"
+              className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-lg transition-all hover:scale-105"
             >
               Browse Products
             </Link>
@@ -82,17 +82,17 @@ const Wishlist = () => {
                   </Link>
                 </div>
 
-                <div className="px-4 pb-4 mt-auto flex justify-between items-center">
+                <div className="px-4 pb-4 mt-auto flex gap-3">
                   <button
                     onClick={() => removeFromWishlist(product.id)}
-                    className="text-red-400 hover:text-red-500 text-sm font-medium transition"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition"
                   >
                     Remove
                   </button>
 
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="text-green-400 hover:text-green-500 text-sm font-medium transition"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition"
                   >
                     Add to Cart
                   </button>

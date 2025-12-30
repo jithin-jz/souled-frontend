@@ -3,28 +3,60 @@ import useAuthStore from "../store/useAuthStore";
 import api from "../utils/api";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { X, AlertCircle } from "lucide-react";
 
 export default function Orders() {
   const { user } = useAuthStore();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState(null);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await api.get("/orders/my/");
+      setOrders(res.data || []);
+    } catch (err) {
+      toast.error("Failed to load orders");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
-
-    const fetchOrders = async () => {
-      try {
-        const res = await api.get("/orders/my/");
-        setOrders(res.data || []);
-      } catch (err) {
-        toast.error("Failed to load orders");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrders();
   }, [user]);
+
+  const handleCancelClick = (order) => {
+    setOrderToCancel(order);
+    setShowCancelModal(true);
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!orderToCancel) return;
+
+    setCancellingOrderId(orderToCancel.id);
+    setShowCancelModal(false);
+
+    try {
+      const res = await api.post(`/orders/${orderToCancel.id}/cancel/`);
+      toast.success(res.data.message || "Order cancelled successfully!");
+      
+      if (res.data.refund_info) {
+        toast.info(res.data.refund_info, { autoClose: 5000 });
+      }
+
+      // Refresh orders
+      await fetchOrders();
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to cancel order");
+    } finally {
+      setCancellingOrderId(null);
+      setOrderToCancel(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -96,7 +128,9 @@ export default function Orders() {
                           ? "bg-blue-900/30 text-blue-300 border-blue-500"
                           : order.order_status === "shipped"
                           ? "bg-purple-900/30 text-purple-300 border-purple-500"
-                          : "bg-emerald-900/30 text-emerald-300 border-emerald-500"
+                          : order.order_status === "delivered"
+                          ? "bg-emerald-900/30 text-emerald-300 border-emerald-500"
+                          : "bg-red-900/30 text-red-300 border-red-500"
                       }`}
                     >
                       {order.order_status?.toUpperCase()}
@@ -177,10 +211,74 @@ export default function Orders() {
                   ))}
                 </div>
               </div>
+
+              {/* Cancel Button */}
+              {order.order_status === "processing" && (
+                <div className="mt-4 pt-4 border-t border-slate-700">
+                  <button
+                    onClick={() => handleCancelClick(order)}
+                    disabled={cancellingOrderId === order.id}
+                    className="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/50 py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {cancellingOrderId === order.id ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
+                        Cancelling...
+                      </>
+                    ) : (
+                      <>
+                        <X className="w-4 h-4" />
+                        Cancel Order
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </article>
           ))}
         </section>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelModal && orderToCancel && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-2xl max-w-md w-full p-6 border border-slate-700 shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-red-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Cancel Order?</h3>
+            </div>
+
+            <p className="text-slate-300 mb-6">
+              Are you sure you want to cancel Order #{orderToCancel.id}? This action cannot be undone.
+              {orderToCancel.payment_status === 'paid' && (
+                <span className="block mt-2 text-sm text-blue-400">
+                  Your refund will be processed within 5-7 business days.
+                </span>
+              )}
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setOrderToCancel(null);
+                }}
+                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={handleCancelConfirm}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

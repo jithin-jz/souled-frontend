@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import AdminNavbar from './AdminNavbar';
 import Loader from '../components/Loader';
+import { handleApiError } from '../utils/errorHandler';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -45,10 +46,10 @@ const Reports = () => {
         const res = await api.get('/panel/reports/');
         setData(res.data);
       } catch (error) {
-        console.error('Failed to fetch reports:', error);
-      } finally {
+        handleApiError(error, 'Failed to fetch reports');
         setLoading(false);
       }
+      setLoading(false);
     };
     fetchData();
   }, []);

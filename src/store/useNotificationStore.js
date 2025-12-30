@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../utils/api';
+import { handleApiError } from '../utils/errorHandler';
 
 const useNotificationStore = create((set, get) => ({
   notifications: [],
@@ -14,7 +15,7 @@ const useNotificationStore = create((set, get) => ({
       const unreadCount = notifications.filter(n => !n.is_read).length;
       set({ notifications, unreadCount, loading: false });
     } catch (error) {
-      console.error("Failed to fetch notifications", error);
+      handleApiError(error, 'Failed to fetch notifications', false);
       set({ loading: false });
     }
   },
@@ -28,7 +29,7 @@ const useNotificationStore = create((set, get) => ({
       const unreadCount = notifications.filter(n => !n.is_read).length;
       set({ notifications, unreadCount });
     } catch (error) {
-      console.error("Failed to mark notification as read", error);
+      handleApiError(error, 'Failed to mark notification as read');
     }
   },
 
@@ -40,7 +41,7 @@ const useNotificationStore = create((set, get) => ({
       const notifications = get().notifications.map(n => ({ ...n, is_read: true }));
       set({ notifications, unreadCount: 0 });
     } catch (error) {
-      console.error("Failed to mark all as read", error);
+      handleApiError(error, 'Failed to mark all notifications as read');
     }
   }
 }));

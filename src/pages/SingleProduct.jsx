@@ -5,6 +5,7 @@ import useAuthStore from "../store/useAuthStore";
 import { toast } from "react-toastify";
 import api from "../utils/api";
 import Loader from "../components/Loader";
+import { handleApiError } from "../utils/errorHandler";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -21,8 +22,8 @@ const SingleProduct = () => {
       try {
         const res = await api.get(`/products/${id}`);
         setProduct(res.data);
-      } catch {
-        toast.error("Failed to load product");
+      } catch (error) {
+        handleApiError(error, 'Failed to load product');
       } finally {
         setLoading(false);
       }
@@ -78,7 +79,7 @@ const SingleProduct = () => {
         <p className="text-red-500 font-semibold mb-4">Product not found</p>
         <button
           onClick={() => navigate(-1)}
-          className="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-md"
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-all hover:scale-105 shadow-md"
         >
           Go Back
         </button>
@@ -129,11 +130,11 @@ const SingleProduct = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row gap-3 mt-8">
             <button
               disabled={btnLoading}
               onClick={safeAddToCart}
-              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-red-600 hover:bg-slate-700 transition disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold bg-red-600 hover:bg-red-700 transition-all disabled:opacity-50 hover:scale-105 shadow-lg"
             >
               {btnLoading ? "Processing..." : "Add to Cart"}
             </button>
@@ -141,7 +142,7 @@ const SingleProduct = () => {
             <button
               disabled={btnLoading}
               onClick={safeBuyNow}
-              className="w-full sm:w-auto px-6 py-3 rounded-md font-medium bg-slate-700 hover:bg-slate-600 transition disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold bg-red-600 hover:bg-red-700 transition-all disabled:opacity-50 hover:scale-105 shadow-lg"
             >
               {btnLoading ? "Processing..." : "Buy Now"}
             </button>

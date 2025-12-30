@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import api from '../utils/api';
 import AdminNavbar from './AdminNavbar';
 import Loader from '../components/Loader';
+import { handleApiError } from '../utils/errorHandler';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -21,8 +22,7 @@ const AdminProducts = () => {
       const res = await api.get(url);
       setProducts(res.data);
     } catch (error) {
-      console.error('Fetch products failed', error);
-      toast.error('Failed to fetch products');
+      handleApiError(error, 'Failed to fetch products');
     } finally {
       setLoading(false);
     }
@@ -45,8 +45,7 @@ const AdminProducts = () => {
       setProducts(prev => prev.filter(p => p.id !== id));
       toast.success('Product deleted');
     } catch (error) {
-      console.error('Delete failed:', error);
-      toast.error('Failed to delete');
+      handleApiError(error, 'Failed to delete product');
     }
   };
 

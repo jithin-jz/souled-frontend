@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { authApi } from '../api/authApi';
 import { tokenManager } from '../utils/api';
+import { handleApiError } from '../utils/errorHandler';
 
 const useAuthStore = create(subscribeWithSelector((set, get) => ({
   user: null,
@@ -55,7 +56,7 @@ const useAuthStore = create(subscribeWithSelector((set, get) => ({
     try {
       await authApi.logout();
     } catch (error) {
-      console.error("Logout failed", error);
+      handleApiError(error, 'Logout failed', false); // Don't show toast, still clearing tokens
     }
     // Clear tokens from localStorage
     tokenManager.clearTokens();

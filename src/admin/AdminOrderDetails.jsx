@@ -4,6 +4,7 @@ import api from "../utils/api";
 import { toast } from "react-toastify";
 import AdminNavbar from "./AdminNavbar";
 import Loader from "../components/Loader";
+import { handleApiError } from '../utils/errorHandler';
 
 const AdminOrderDetails = () => {
   const { id } = useParams();
@@ -16,8 +17,7 @@ const AdminOrderDetails = () => {
       const res = await api.get(`/orders/${id}/`);
       setOrder(res.data);
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to fetch order details");
+      handleApiError(error, 'Failed to fetch order details');
     } finally {
       setLoading(false);
     }
@@ -37,8 +37,7 @@ const AdminOrderDetails = () => {
       setOrder((prev) => ({ ...prev, [statusType]: newValue }));
       toast.success("Status updated successfully");
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to update status");
+      handleApiError(error, 'Failed to update status');
     }
   };
 

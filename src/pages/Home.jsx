@@ -214,18 +214,21 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="flex flex-col items-center mt-8 mb-6">
-  <span className="text-base font-bold tracking-widest text-red-500">
-    VIEW ALL PRODUCTS
-  </span>
-
-  <Link
-    to="/products"
-    className="text-red-600 hover:text-red-700 text-6xl font-extrabold leading-none jump-arrow"
-  >
-    ᗐ
-  </Link>
-</div>
+      <div className="flex justify-center mt-12 mb-10">
+        <Link
+          to="/products"
+          className="group relative inline-flex items-center gap-2 bg-white text-slate-900 font-bold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border-2 border-slate-200"
+        >
+          <span className="text-sm tracking-wider">EXPLORE ALL PRODUCTS</span>
+          <svg 
+            className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" 
+            fill="currentColor" 
+            viewBox="0 0 20 20"
+          >
+            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </Link>
+      </div>
 
     </div>
   );

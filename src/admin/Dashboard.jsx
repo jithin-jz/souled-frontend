@@ -7,6 +7,7 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { handleApiError } from '../utils/errorHandler';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -33,8 +34,7 @@ const Dashboard = () => {
       const res = await api.get('/panel/dashboard/');
       setStats(res.data);
     } catch (err) {
-      console.error("Failed to load dashboard data", err);
-    } finally {
+      handleApiError(err, 'Failed to load dashboard data');
       setLoading(false);
     }
   };

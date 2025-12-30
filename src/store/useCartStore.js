@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import api from '../utils/api';
 import useAuthStore from './useAuthStore';
+import { handleApiError } from '../utils/errorHandler';
 
 const useCartStore = create((set, get) => ({
   cart: [],
@@ -22,7 +23,7 @@ const useCartStore = create((set, get) => ({
       items.sort((a, b) => a.id - b.id);
       set({ cart: items });
     } catch (error) {
-      console.error("Load cart failed", error);
+      handleApiError(error, 'Failed to load cart', !silent);
     } finally {
       if (!silent) set({ loading: false });
     }
@@ -42,6 +43,7 @@ const useCartStore = create((set, get) => ({
           wishlist: items.map((it) => it.product)
       });
     } catch (error) {
+      handleApiError(error, 'Failed to load wishlist', false);
       set({ wishlistItems: [], wishlist: [] });
     }
   },
@@ -52,7 +54,7 @@ const useCartStore = create((set, get) => ({
       await api.post("/cart/add/", { product_id: product.id, quantity });
       await get().loadCart();
     } catch (error) {
-        console.error("Add to cart failed", error);
+      handleApiError(error, 'Failed to add item to cart');
     }
   },
 
@@ -61,7 +63,7 @@ const useCartStore = create((set, get) => ({
       await api.delete(`/cart/remove/${itemId}/`);
       await get().loadCart(true);
     } catch (error) {
-      console.error("Remove from cart failed", error);
+      handleApiError(error, 'Failed to remove item from cart');
     }
   },
 
@@ -71,7 +73,7 @@ const useCartStore = create((set, get) => ({
       await api.patch(`/cart/update/${itemId}/`, { quantity: qty });
       await get().loadCart(true);
     } catch (error) {
-      console.error("Update quantity failed", error);
+      handleApiError(error, 'Failed to update quantity');
     }
   },
 
@@ -92,7 +94,7 @@ const useCartStore = create((set, get) => ({
       await api.post("/cart/wishlist/add/", { product_id: product.id });
       await get().loadWishlist();
     } catch (error) {
-        console.error("Add to wishlist failed", error);
+      handleApiError(error, 'Failed to add to wishlist');
     }
   },
 
@@ -106,7 +108,7 @@ const useCartStore = create((set, get) => ({
       await api.delete(`/cart/wishlist/remove/${item.id}/`);
       await get().loadWishlist();
     } catch (error) {
-        console.error("Remove from wishlist failed", error);
+      handleApiError(error, 'Failed to remove from wishlist');
     }
   },
 

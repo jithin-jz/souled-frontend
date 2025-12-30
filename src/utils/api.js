@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) {
-  console.error("Missing VITE_API_URL in .env");
+  throw new Error("CRITICAL: VITE_API_URL is not defined in environment variables. Please check your .env file.");
 }
 
 // Token management
