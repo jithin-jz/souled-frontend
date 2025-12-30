@@ -53,46 +53,52 @@ const Wishlist = () => {
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
+          {/* Page Header */}
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+            My Wishlist ({wishlist.length} {wishlist.length === 1 ? 'item' : 'items'})
+          </h1>
+          
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {wishlist.map((product) => (
               <div
                 key={product.id}
-                className="bg-slate-800 rounded-xl shadow hover:shadow-xl overflow-hidden flex flex-col group border border-slate-700"
+                className="bg-slate-800 rounded-lg sm:rounded-xl shadow hover:shadow-xl overflow-hidden flex flex-col group border border-slate-700"
               >
                 <Link to={`/products/${product.id}`} className="block">
-                  <div className="w-full bg-slate-700">
+                  <div className="w-full bg-slate-700 aspect-square">
                     <img
                       src={product.image}
                       alt={product.name}
                       onError={handleImageError}
-                      className="w-full h-auto object-contain"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </Link>
 
-                <div className="p-4">
+                <div className="p-3 sm:p-4">
                   <Link to={`/products/${product.id}`}>
-                    <h3 className="font-bold text-white truncate mb-1">
+                    <h3 className="font-bold text-white text-sm sm:text-base truncate mb-1">
                       {product.name}
                     </h3>
-                    <p className="text-green-400 font-semibold">
+                    <p className="text-green-400 font-semibold text-sm sm:text-base">
                       ₹{Number(product.price).toLocaleString("en-IN")}
                     </p>
                   </Link>
                 </div>
 
-                <div className="px-4 pb-4 mt-auto flex gap-3">
+                {/* Mobile-friendly button layout: stack on small screens, side by side on larger */}
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 mt-auto flex flex-col xs:flex-row gap-2 sm:gap-3">
                   <button
                     onClick={() => removeFromWishlist(product.id)}
-                    className="flex-1 px-4 py-2 rounded-full bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-all"
+                    className="flex-1 px-3 sm:px-4 py-2 rounded-full bg-white text-black text-xs sm:text-sm font-semibold hover:bg-gray-200 active:bg-gray-300 transition-all"
                   >
                     Remove
                   </button>
 
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="flex-1 px-4 py-2 rounded-full bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-all"
+                    className="flex-1 px-3 sm:px-4 py-2 rounded-full bg-red-600 text-white text-xs sm:text-sm font-semibold hover:bg-red-700 active:bg-red-800 transition-all"
                   >
                     Add to Cart
                   </button>
