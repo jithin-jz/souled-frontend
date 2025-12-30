@@ -142,7 +142,7 @@ const SingleProduct = () => {
             <button
               disabled={btnLoading}
               onClick={safeBuyNow}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-all disabled:opacity-50"
             >
               {btnLoading ? "Processing..." : "Buy Now"}
             </button>
