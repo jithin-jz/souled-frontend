@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
+    "@stripe/react-stripe-js": "^5.4.1",
+    "@stripe/stripe-js": "^8.6.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.10.0",
